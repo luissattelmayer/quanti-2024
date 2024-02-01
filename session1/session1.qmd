@@ -257,16 +257,13 @@ model <- lm(final_exam ~ midterm, data = data)
 
 
 ```{r}
-#| eval: false
-library(broom)
-tidy(logit)
+tidy(model)
 ```
 
 Now let's glance the hell out of the model: 
 
 ```{r}
-#| eval: false
-glance(logit)
+glance(model)
 ```
 Don't worry about what these things might mean for now, AIC and BIC will for example come up again next session. 
 
