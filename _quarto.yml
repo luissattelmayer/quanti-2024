@@ -24,8 +24,20 @@ book:
     - part: "Session 3"
       chapters:
         - session3/session3.qmd
+    - part: "Session 4"
+      chapters:
+        - session4/session4.qmd
+    - part: "Session 5"
+      chapters:
+        - session5/session5.qmd
+    - part: "Session 6"
+      chapters:
+        - session6/session6.qmd
   appendices:
     - appendix/rmarkdown.qmd
+    - appendix/catchup/r-catchup.qmd
+    - appendix/webscraping.qmd
+    
 
 
 
