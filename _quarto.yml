@@ -27,6 +27,7 @@ book:
     - part: "Session 4"
       chapters:
         - session4/session4.qmd
+        - session4/session4-2.qmd
     - part: "Session 5"
       chapters:
         - session5/session5.qmd
@@ -45,6 +46,7 @@ book:
 format:
   html:
     theme: cosmo
+    callout-appearance: simple
     code-block-background: true
     code-block-border-left: "#31BAE9"
     highlight-style: pygments
