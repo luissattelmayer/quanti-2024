@@ -21,6 +21,9 @@ book:
     - part: "Session 2"
       chapters:
         - session2/session2.qmd
+    - part: "Session 3"
+      chapters:
+        - session3/session3.qmd
   appendices:
     - appendix/rmarkdown.qmd
 
