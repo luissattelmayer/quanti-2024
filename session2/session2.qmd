@@ -517,6 +517,9 @@ In RStudio we have several ways to automate this. For example, you can write so-
 
 I am aware that this is only the second session and that may sound like a lot. Everything from here on is **optional**, but I think it's important that you see this as early as possible. Some of you may already feel comfortable enough to try something like this out for yourselves. If you don't, that's okay too. You will get there, trust me! I just want to show you what is possible and what you can do with R.
 
+![](images/Drake_meme.jpeg){fig-align="center"}
+
+
 ### Writing your function
 Functions in R are incredibly powerful and essential for efficient and automated programming. A function in R is defined using the function keyword. The basic structure includes the name of the function, a set of parameters, and the body where the actual computations are performed.
 
@@ -604,6 +607,7 @@ Put simply, we can use the functions of the `purrr` package to apply a function 
 The map() function, part of the purrr package in R, is built around a simple yet powerful concept: applying a function to each element of a list or vector and returning a new list with the results. This concept is known as "mapping," hence the name `map()`.
 
 
+![The logic is simple. You take map(a list of your choice + your function) which then creates an output that behaves as if you had applied that function to each list entry individually.](images/map-arg.png)
 
 
 Here's a breakdown of the logic behind `map()`:

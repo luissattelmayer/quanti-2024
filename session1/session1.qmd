@@ -170,11 +170,9 @@ How do we interpret this?
 ## The `broom` package (OPTIONAL!)
 The broom package in R is designed to bridge the gap between R's statistical output and tidy data. [^session1-2]  It takes the output of various R statistical functions and turns them into tidy data frames. This is particularly useful because many of R's modeling functions return outputs that are not immediately suitable for further data analysis or visualization within the tidyverse framework. 
 
-[^session1-2]: As a quick reminder these three principles are guiding when we speak of tidy data: 
+[^session1-2]: As a quick reminder these three principles are guiding when we speak of tidy data: 1) Every column is a variable, 2) Every row is an observation, 3) Every cell is a single value.
 
-1. Every column is a variable. 
-2. Every row is an observation. 
-3. Every cell is a single value.
+![](images/logo.png){fig-align="center" width=30%}
 
 
 ### Nesting  with `nest()` {#nesting}
