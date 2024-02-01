@@ -165,6 +165,46 @@ How do we interpret this?
 -   **F Statistics**: The F-statistic is like a test score that tells you how well your model is doing compared to a really simple model. It's a way to check if the model you've built is any better than just guessing. A large F-statistic means that your model is doing much better than just guessing.
 
 ## Visualizing the Regression Line
+Just for fun and to refresh you `ggplot` knowledge, let's visualize the regression line. Here, we specify 
+
+
+
+```{r}
+ggplot(data, aes(x = midterm, y = final_exam)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+    labs(
+    title = "Relationship between Midterm and Final Exam Scores",
+    x = "Midterm Scores",
+    y = "Final Exam Scores"
+  ) +
+  theme_minimal()
+```
+
+
+Remember how I told you above that OLS was about finding the smallest amount of squared errors! This is what we can visualize here. The red lines are the distance from the residuals to the fitted line. The OLS line is the line that minimizes the sum of the squared errors! 
+
+```{r}
+ggplot(data, aes(x = midterm, y = final_exam)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  # highlight the OLS logic graphically
+  geom_segment(
+    aes(
+      x = midterm,
+      y = final_exam,
+      xend = midterm,
+      yend = predict(model),
+      color = "red",
+      alpha = 0.5,
+    )) +
+  labs(title = "Relationship between Midterm and Final Exam Scores",
+       x = "Midterm Scores",
+       y = "Final Exam Scores") +
+  guides(color = FALSE, alpha = FALSE) +
+  theme_minimal()
+```
+
 
 
 ## The `broom` package (OPTIONAL!)
