@@ -1,0 +1,222 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Advanced RStudio Labsessions",
+    "section": "",
+    "text": "Course Overview\nThis repository contains all the course material for the RStudio Labsessions for the Spring semester 2024 at the School of Research at SciencesPo Paris. The class follows Brenda van Coppenolle’s and Jan Rovny’s lecture on Quantitative Methods II. Furthermore, the RStudio part of the course is a direct continuation of Malo Jan’s RStudio introduction course. If you feel the need to go back to some basics of general R use, data management or visualization, feel free to check out his course’s website. Rest assured, however, that 1) we will recap plenty of things, 2) make slow but steady progress, 3) and come back to the essentials of data wrangling again during the semester while building statistical models.",
+    "crumbs": [
+      "Introduction",
+      "Course Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#course-structure",
+    "href": "index.html#course-structure",
+    "title": "Advanced RStudio Labsessions",
+    "section": "Course Structure",
+    "text": "Course Structure\nIn total we will see each other 6 times. The lessons will be structured in such a way that I will first present something to you and explain my script. Ideally, you will then start coding in groups of 2 and work on exercises related to the topic. You can find more information about the exercises in the subsection “course validation”. I will of course be there to help you. The rest you solve at home and send me your final script. At the beginning of each next meeting we will go through the solutions together. Also, I upload my own script before each session, so you can use it as a template when solving the tasks and also later, when the course is over, as a template for further coding (if you like of course…).\n\n\n\n\n\n\n\n\nSession\nDescription\nDates\n\n\n\n\nSession 1\nRStudio Recap & OLS\n01/02 & 08/02\n\n\nSession 2\nLogistic Regressions\n15/02 & 29/02\n\n\nSession 3\nMultinomial Regression\n07/03 & 14/03\n\n\nSession 4\nCausal Inference I\n21/03 & 28/03\n\n\nSession 5\nCausal Inference II\n04/04 & 11/04\n\n\nSession 6\nTime Series\n18/04 & 25/04",
+    "crumbs": [
+      "Introduction",
+      "Course Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#course-validation",
+    "href": "index.html#course-validation",
+    "title": "Advanced RStudio Labsessions",
+    "section": "Course Validation",
+    "text": "Course Validation\nIn the two weeks between each lecture, you will be given exercises to upload to the designated link for each session. The document where you write the solutions must be written in Markdown format.\nI will grade your solutions to my exercises on a 0 to 5 scale. I would like to see that you have done something and hopefully finished the exercise. If you are unable to finish the exercise, it is no problem and I do understand that not everybody feels as comfortable with R as some other people might do. Handing something in is key to getting points! This class can be finished by everyone and I do not want you to worry about your grade too much. But I would like that you all at least try to solve the exercises! Work in groups of two and try to hand in something after each session. The precise deadline will be communicated in class, the course’s GitHub page and on the Moodle page.",
+    "crumbs": [
+      "Introduction",
+      "Course Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#optional-course-parts",
+    "href": "index.html#optional-course-parts",
+    "title": "Advanced RStudio Labsessions",
+    "section": "Optional Course Parts",
+    "text": "Optional Course Parts\nWhen I taught the course last year, some students approached me and asked for several levels of difficulty. I will try to implement this in the homework and in class. I have also decided to add an optional part to each session. In the optional parts, I will introduce new packages, advanced methods, and I will also upload a few scripts in the appendix on things like text-as-data, webscraping or similar, if I have the time. Also – again, if the times allows it – I will go through these optional parts in class. But please be assured that if you decide not to follow the optional parts, that is okay. But if you do, I can promise you will make better and faster progress. Lastly, if you are interested in certain things, want to learn about specific methods or how to implement things or workflows in RStudio, please do not hesitate to contact me and I will see if I can squeeze it in somewhere.",
+    "crumbs": [
+      "Introduction",
+      "Course Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#requirements",
+    "href": "index.html#requirements",
+    "title": "Advanced RStudio Labsessions",
+    "section": "Requirements",
+    "text": "Requirements\nYou must have downloaded R and RStudio by the beginning of the course (you need to install both!) before our sessions. Please let me know if you encounter any problems during the installation. Here is a quick guide on how to do that: https://rstudio-education.github.io/hopr/starting.html\nR and RStudio are both free and open source. You need both of them installed in order to operate with the R coding language.\nFor R, go on the CRAN website and download the file for your respective operating system: https://cran.r-project.org/ For RStudio, you need to do the same thing by clicking on this link: https://posit.co/products/open-source/rstudio/ RStudio has received a new name recently (“posit”) but you will still find all the necessary steps behind this link under the name of RStudio.\nOtherwise, there are few prerequisites except that you must bring your computer to the sessions with the required programs installed. I will provide you with datasets in each case and I will explain everything else in the course.",
+    "crumbs": [
+      "Introduction",
+      "Course Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#help-and-office-hours",
+    "href": "index.html#help-and-office-hours",
+    "title": "Advanced RStudio Labsessions",
+    "section": "Help and Office Hours",
+    "text": "Help and Office Hours\nThere are unfortunately no regular office hours. But please do not hesitate to reach out, if you have any concerns, questions or feedback for me! My inbox is always open. I tend to reply quickly but in the case that I have not replied in under 48h, simply send the email again. I will not be offended!\nLearning how to code and working with RStudio can be a struggle and a tough task. I have started out once like you and I will try to keep that in mind. Feel free to always ask questions in class or if you see me on campus. The most important thing, however, is that you try!",
+    "crumbs": [
+      "Introduction",
+      "Course Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#acknowledgements",
+    "href": "index.html#acknowledgements",
+    "title": "Advanced RStudio Labsessions",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements\nThis is only a quick section to give credit, where credit is due! Malo Jan is one of my daily inspirations for anything that has to do with research and RStudio. I have taught this class already last year and had most of my scripts written in PDFs but Rohan Alexander’s book Telling Stories with Data served as a new inspiration to write this course in its Quarto book format. Also shout outs to Felix Lennert and some of his ideas for the homework.",
+    "crumbs": [
+      "Introduction",
+      "Course Overview"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html",
+    "href": "session1/session1.html",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "",
+    "text": "1.1 Introduction\nThis is a short recap of things you have seen last year and will need this year as well. It will refresh your understanding of the linear regression method called ordinary least squares (OLS). This script is supposed to serve as a cheat sheet for you to which you can always come back to.\nThese are the main points of today’s session and script:\nThese are the packages we will be using in this session:\nneeds(\n  tidyverse,\n  rio, \n  stargazer,\n  broom,\n)",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html#introduction",
+    "href": "session1/session1.html#introduction",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "",
+    "text": "A refresher of Ordinary Least Squares (OLS)\nWhat is Base R and what are packages?\nA recap of basic coding in R\nBuilding & Interpreting a simple linear model\nVisualizing Residuals\nThe broom package (OPTIONAL!)",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html#ordinary-least-squares-ols",
+    "href": "session1/session1.html#ordinary-least-squares-ols",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "\n1.2 Ordinary Least Squares (OLS)",
+    "text": "1.2 Ordinary Least Squares (OLS)\nOLS regressions are the powerhouse of statistics. The world must have been a dark place without them. They are the most basic form of linear regression and are used to predict the value of a dependent variable (DV) based on the value of independent variables (IVs). It is important to note that the relationship between the DV and the IVs is assumed to be linear.\nAs a quick reminder, this is the formula for a basic linear model: \\(\\widehat{Y} = \\widehat{\\alpha} + \\widehat{\\beta} X\\).\nOLS is a certain kind of method of linear model in which we choose the line which has the least prediction errors. This means that it is the best way to fit a line through all the residuals with the least errors. It minimizes the sum of the squared prediction errors \\(\\text{SSE} = \\sum_{i=1}^{n} \\widehat{\\epsilon}_i^2\\)\nFive main assumptions have to be met to allow us to construct an OLS model:\n\nLinearity: Linear relationship between IVs and DVs\nNo endogeneity between \\(y\\) and \\(x\\)\n\nErrors are normally distributed\nHomoscedasticity (variance of errors is constant)\nNo multicolinearity (no linear relationship between the independent variables)\n\nFor this example, I will be working with some test scores of a midterm and a final exam which I once had to work through. We are trying to see if there is a relationship between the score in the midterm and the grade of the final exam. Theoretically speaking, we would expect most of the students who did well on the first exam to also get a decent grade on the second exam. If our model indicates a statistical significance between the independent and the dependent variable and a positive coefficient of the former on the latter, this theoretical idea then holds true.",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html#coding-recap",
+    "href": "session1/session1.html#coding-recap",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "\n1.3 Coding Recap",
+    "text": "1.3 Coding Recap\nBefore we start, let’s refresh our coding basics again. RStudio works with packages and libraries. There is something called Base R, which is the basic infrastructure that R always comes with when you install it. The R coding language has a vibrant community of contributors who have written their own packages and libraries which you can install and use. As Malo, I am of the tidyverse school and mostly code with this package or in its style when I am wrangling with data, changing its format or values and so on. Here and there, I will, however, try to provide you with code that uses Base R or other packages. In coding, there are many ways to achieve the same goal – and I will probably be repeating this throughout the semester – and we always strive for the fastest or most automated way. I will not force the tidyverse environment on you but I do think that it is one of the most elegant and fastest way of doing statistics in R. It is sort of my RStudio dialect but you can obviously stick to yours if you have found it. Also, as long as you find a way that works for you, that is fine with me!\nTo load the packages, we are going to need:\n\nlibrary(tidyverse)\n\nNext we will import the dataset of grades.\n\ndata &lt;- read_csv(\"course_grades.csv\")\n\nRows: 200 Columns: 1\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (1): midterm|final_exam|final_grade|var1|var2\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThe path which I specify in the read_csv file is short as this quarto document has the same working directory to which the data set is also saved. If you, for example, have your dataset on your computer’s desktop, you can access it via some code like this one:\n\ndata &lt;- read_csv(\"~/Desktop/course_grades.csv\")\n\nOr if it is within a folder on your desktop:\n\ndata &lt;- read_csv(\"~/Desktop/folder/course_grades.csv\")\n\n\n\n\n\n\n\nImportant\n\n\n\nI will be only working within .Rproj files and so should you. 1 This is the only way to ensure that your working directory is always the same and that you do not have to change the path to your data set every time you open a new RStudio session. Further, this is the only way to make sure that other collaborators can easily open your project and work with it as well. Simply zip the file folder in which you have your code and\n\n\nYou can also import a dataset directly from the internet. Several ways are possible that all lead to the same end result:\n\ndataset_from_internet_1 &lt;- read_csv(\"https://www.chesdata.eu/s/1999-2019_CHES_dataset_meansv3.csv\")\n  \n# this method uses the rio package\nlibrary(rio)\ndataset_from_internet_2 &lt;- import(\"https://jan-rovny.squarespace.com/s/ESS_FR.dta\")\n\nLet’s take a first look at the data which we just imported:\n\n# tidyverse\nglimpse(data)\n\nRows: 200\nColumns: 1\n$ `midterm|final_exam|final_grade|var1|var2` &lt;chr&gt; \"17.4990613754243|15.641013…\n\n# Base R\nstr(data)\n\nspc_tbl_ [200 × 1] (S3: spec_tbl_df/tbl_df/tbl/data.frame)\n $ midterm|final_exam|final_grade|var1|var2: chr [1:200] \"17.4990613754243|15.64101334897|17.63|NA|NA\" \"17.7446326301825|18.7744366510731|14.14|NA|NA\" \"13.9316618079058|14.9978584022336|18.2|NA|NA\" \"10.7068243984724|11.9479428399047|19.85|NA|NA\" ...\n - attr(*, \"spec\")=\n  .. cols(\n  ..   `midterm|final_exam|final_grade|var1|var2` = col_character()\n  .. )\n - attr(*, \"problems\")=&lt;externalptr&gt; \n\n\nSomething does not look right, this happens quite frequently when saving a csv file. It stands for comma separated value. R is having trouble reading this file since I have saved all grades with commas instead of points. Thus, we need to use the read_delim() function. Sometimes the read_csv2() function also does the trick. You’d be surprised by how often you encounter this problem. This is simply to raise your awareness to it!\nThe read_delim() function is the overall function of the readr package to read any sort of data file, whereas read_csv() and read_csv2() are specific functions to read csv files. The read_delim() function has a delim argument which you can use to specify the delimiter of your data file. For the sake of the example, I had purposefully saved the csv file using the | delimiter.\n\ndata &lt;- read_delim(\"course_grades.csv\", delim = \"|\")\n\nRows: 200 Columns: 5\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \"|\"\ndbl (3): midterm, final_exam, final_grade\nlgl (2): var1, var2\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nglimpse(data)\n\nRows: 200\nColumns: 5\n$ midterm     &lt;dbl&gt; 17.499061, 17.744633, 13.931662, 10.706824, 17.118799, 17.…\n$ final_exam  &lt;dbl&gt; 15.641013, 18.774437, 14.997858, 11.947943, 15.694728, 17.…\n$ final_grade &lt;dbl&gt; 17.63, 14.14, 18.20, 19.85, 14.67, 20.26, 16.90, 13.40, 12…\n$ var1        &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…\n$ var2        &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…\n\n\nThis time, it has been properly imported. But by looking closer at it, we can see that there are two columns in the data frame that are empty and do not even have a name. We need to get rid of these first. Here are several ways of doing this. In coding, many ways lead to the same goal. In R, some come with a specific package, some use Base R. It is up to you to develop your way of doing things.\n\n# This is how you could do it in Base R\ndata &lt;- data[, -c(4, 5)]\n\n# Using the select() function of the dplyr package you can drop the fourth\n# and fifth columns by their position using the - operator and the -c() to\n# remove multiple columns\ndata &lt;- data  |&gt;  select(-c(4, 5))\n\n# I have stored the mutated data set in the old object; \n# you can also just transform the object itself...\ndata |&gt; select(-c(4, 5))\n\n# ... or create a new one\ndata_2 &lt;- data |&gt; select(-c(4, 5))\n\nNow that we have set up our data frame, we can build our OLS model. For that, we can simply use the lm() function that comes with Base R, it is built into R so to speak. In this function, we specify the data and then construct the model by using the tilde (~) between the dependent variable and the independent variable(s). Store your model in an object which can later be subject to further treatment and analysis.\n\nmodel &lt;- lm(final_exam ~ midterm, data = data)\nsummary(model)\n\n\nCall:\nlm(formula = final_exam ~ midterm, data = data)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-3.6092 -0.8411 -0.0585  0.8712  3.3086 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  4.62482    0.73212   6.317 1.72e-09 ***\nmidterm      0.69027    0.04819  14.325  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 1.34 on 198 degrees of freedom\nMultiple R-squared:  0.5089,    Adjusted R-squared:  0.5064 \nF-statistic: 205.2 on 1 and 198 DF,  p-value: &lt; 2.2e-16\n\n\nSince the summary() function only shows us something in our console and the output is not very pretty, I encourage you to use the broom package for a nicer regression table.\n\nbroom::tidy(model)\n\n# A tibble: 2 × 5\n  term        estimate std.error statistic  p.value\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1 (Intercept)    4.62     0.732       6.32 1.72e- 9\n2 midterm        0.690    0.0482     14.3  2.10e-32\n\n\nYou can also use the stargazer package in order to export your tables to text or LaTeX format which you can then copy to your documents.\n\nlibrary(stargazer)\nstargazer(model, type = \"text\", out = \"latex\")\n\n\n===============================================\n                        Dependent variable:    \n                    ---------------------------\n                            final_exam         \n-----------------------------------------------\nmidterm                      0.690***          \n                              (0.048)          \n                                               \nConstant                     4.625***          \n                              (0.732)          \n                                               \n-----------------------------------------------\nObservations                    200            \nR2                             0.509           \nAdjusted R2                    0.506           \nResidual Std. Error      1.340 (df = 198)      \nF Statistic          205.196*** (df = 1; 198)  \n===============================================\nNote:               *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html#interpretation-of-ols-results",
+    "href": "session1/session1.html#interpretation-of-ols-results",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "\n1.4 Interpretation of OLS Results",
+    "text": "1.4 Interpretation of OLS Results\nHow do we interpret this?\n\n\nR2: Imagine you’re trying to draw a line that best fits a bunch of dots (data points) on a graph. The R-squared value is a way to measure how well that line fits the dots. It’s a number between 0 and 1, where 0 means the line doesn’t fit the dots at all and 1 means the line fits the dots perfectly. R-squared tells us how much of the variation in the dependent variable is explained by the variation in the predictor variables.\n\nAdjusted R2: Adjusted R-squared is the same thing as R-squared, but it adjusts for how many predictor variables you have. It’s like a better indicator of how well the line fits the dots compared to how many dots you’re trying to fit the line to. It always adjusts the R-squared value to be a bit lower so you always want your adjusted R-squared value to be as high as possible.\n\nResidual Std. Error: The residual standard error is a way to measure the average distance between the line you’ve drawn (your model’s predictions) and the actual data points. It’s like measuring how far off the line is from the actual dots on the graph. Another way to think about this is like a test where you want to get as many answers correct as possible and if you are off by a lot in your answers, the residual standard error would be high, but if you are only off by a little, the residual standard error would be low. So in summary, lower residual standard error is better, as it means that the model is making predictions that are closer to the true values in the data.\n\nF Statistics: The F-statistic is like a test score that tells you how well your model is doing compared to a really simple model. It’s a way to check if the model you’ve built is any better than just guessing. A large F-statistic means that your model is doing much better than just guessing.",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html#visualizing-the-regression-line",
+    "href": "session1/session1.html#visualizing-the-regression-line",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "\n1.5 Visualizing the Regression Line",
+    "text": "1.5 Visualizing the Regression Line",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html#the-broom-package-optional",
+    "href": "session1/session1.html#the-broom-package-optional",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "\n1.6 The broom package (OPTIONAL!)",
+    "text": "1.6 The broom package (OPTIONAL!)\nThe broom package in R is designed to bridge the gap between R’s statistical output and tidy data. 2 It takes the output of various R statistical functions and turns them into tidy data frames. This is particularly useful because many of R’s modeling functions return outputs that are not immediately suitable for further data analysis or visualization within the tidyverse framework.\n\nEvery column is a variable.\nEvery row is an observation.\nEvery cell is a single value.\n\n\n1.6.1 Nesting with nest()\n\nNesting in the context of the broom package usually refers to the idea of creating a list-column in a data frame (or even better a tibble) where each element of this list-column is itself a data frame (again, even better a tibble) or a model object. In a complex analysis, you might fit separate models to different subsets of data. Nesting allows you to store each of these models (or their broom-tidied summaries that we will see in the next three sub-sections) within a single, larger data frame (for the third time, the best is to do this with a tibble) for easier manipulation and analysis. For questions on what tibbles are see the below section on tibbles.\nLet’s go back to the midterm data which I have used before and randomly assign students into two classes (Class A or Class B) pretending that two different classes of students had taken the exams. I will then later on nest the data by class so that you can understand the logic of nesting.\n\ndata &lt;- data |&gt; \n  mutate(class = sample(c(\"A\", \"B\"), size = nrow(data), replace = TRUE))\n\nNow I will group my observations by class using group_by() and then nest them within these groups. The output will only contain two rows, class A and class B, and each row will contain a tibble with the observations of the respective class.\n\ndata |&gt; \n  group_by(class) |&gt;\n  nest()\n\n# A tibble: 2 × 2\n# Groups:   class [2]\n  class data              \n  &lt;chr&gt; &lt;list&gt;            \n1 A     &lt;tibble [91 × 3]&gt; \n2 B     &lt;tibble [109 × 3]&gt;\n\n\nThat is a very simple application of a nesting process. You can group_by() and nest() by many different variables. You might want to nest your observations per year or within countries. You can also nest by multiple variables at the same time. We will see this idea again in the next session when we will talk about the purrr package and how to automatically run regressions for several countries at the same time\n\n1.6.2 Model estimates with tidy()\n\nThe tidy() function takes statistical output ofa model and turns it into a tidy tibble. This means each row is an observation (e.g., a coefficient in a regression output) and each column is a variable (e.g., estimate, standard error, statistic). For instance, after fitting a linear model, you can use tidy() to create a data frame where each row represents a coefficient, with columns for estimates, standard errors, t-values, and p-values.\n\n1.6.3 Key metrics with glance()\n\nglance() provides a one-row summary of a model’s information. It captures key metrics that describe the overall quality or performance of a model, like \\(R^2\\), AIC, BIC in the context of linear models. This is useful for getting a quick overview of a model’s performance metrics.\n\n1.6.4 Residuals with augment()\n\nThe augment() function adds information about individual observations to the original data, such as fitted values or residuals in a regression model. You want to do this when you are evaluating a model fit at the observation level, checking for outliers, or understanding the influence of individual data points. We will talk more about model diagnostics in the next session!\nLet’s take a look at how this would work out in practice. For simplicity sake, we will set the nest() logic aside for a second and only look at the tidy(), glance(), and augment() functions.\nHere I only build the same model that we have already seen above:\n\nmodel &lt;- lm(final_exam ~ midterm, data = data)\n\n\nlibrary(broom)\ntidy(logit)\n\nNow let’s glance the hell out of the model:\n\nglance(logit)\n\nDon’t worry about what these things might mean for now, AIC and BIC will for example come up again next session.\n\n1.6.5 What is a tibble?",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "session1/session1.html#footnotes",
+    "href": "session1/session1.html#footnotes",
+    "title": "\n1  RStudio Recap & OLS\n",
+    "section": "",
+    "text": "Malo’s explanation and way of introducing you to RStudio projects can be found here.↩︎\nAs a quick reminder these three principles are guiding when we speak of tidy data:↩︎",
+    "crumbs": [
+      "Session 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RStudio Recap & OLS</span>"
+    ]
+  },
+  {
+    "objectID": "appendix/rmarkdown.html",
+    "href": "appendix/rmarkdown.html",
+    "title": "Appendix A — Quarto & The Markdown Language",
+    "section": "",
+    "text": "A.1 What are Quarto & RMarkdown?\nQuarto is an open source tool that allows you to combine code, its outputs, with text in order to publish reproducible and high quality scripts and documents. You can include several (different) programming languages such as R, Python, Julia or others in either the same or single scripts.\nBefore quarto, Markdown was the standard. RMarkdown is a version that is specifically tailored to R. If you know how to use tools like Obsidian, you might already be familiar with the Markdown syntax. Similarly to Quarto, it is a framework in which you can code in R, document your code, annotate it with text and present your research, graphs and models to others. It generates documents which are not only nice to look at but also the best way to present your quantitative work to others. Quarto acts as a more powerful wrapper around Markdown. Once you have understood the syntax, and believe me when I say that it is not tricky, you might even choose to take your notes in the Markdown format. Every Markdown document needs to be knitted. This will transform your text, code and the commands (which you have told R to do) into either HTML, PDF or Word documents. This is what we call the output of your Markdown document.\nIn the Markdown language, you have to explain to the computer what you want it to show in the output. Unlike how we would see it in Microsoft Word or Pages, you do not have any buttons which allow you to write in italic or bold letters. You need to let R know, via certain commands that I will present to you below, what it is supposed to do with the text and code you have written.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Quarto & The Markdown Language</span>"
+    ]
+  },
+  {
+    "objectID": "appendix/rmarkdown.html#getting-started",
+    "href": "appendix/rmarkdown.html#getting-started",
+    "title": "Appendix A — Quarto & The Markdown Language",
+    "section": "\nA.2 Getting started",
+    "text": "A.2 Getting started\nIn order to get started with Quarto, you first need to install it from here. Then, you will have to open an .qmd file in RStudio. Go to the upper left corner, click on the plus sign on the white page and select Quarto document. A new document will open. It might contain some text which we will go through and you’ll understand in a second. It is possible that you first have to install the R Markdown package from CRAN. To do this, run this line of code in your console:\n\nif(!require(rmarkdown)) \n  install.packages(\"rmarkdown\", repos = \"http://cran.us.r-project.org\")",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Quarto & The Markdown Language</span>"
+    ]
+  },
+  {
+    "objectID": "appendix/rmarkdown.html#annotating-text",
+    "href": "appendix/rmarkdown.html#annotating-text",
+    "title": "Appendix A — Quarto & The Markdown Language",
+    "section": "\nA.3 Annotating text",
+    "text": "A.3 Annotating text\nHere are the most common things you might want to do with your text. These are commands that must be put before and after the words or sentences that you want to change. If you are used to coding html, this might seem familiar:\n\n\nitalics can be done with two ** in between which you put the words that should be italic\n\nbold words follow the same principle but putting two ** in front and ** two behind your chunk of text\nif you want to itemize or enumerate something simply use hyphens like this - or “1.”, “2.” etc.\nany headers must be preceded by a #, the more # you add the smaller the header will become; this way you can add up to six different sizes of headers\nany mathematical equations or variables can be written in LaTeX style by putting dollar signs around your text: $y = \\alpha + \\beta_1*x + \\epsilon$ becomes \\(y = \\alpha + \\beta_1*x + \\epsilon\\)\n\n\nThese commands that regard the textual output (anything that is not code in your final Markdown document) might not be that interesting for you (yet). You do not need to know how to write LaTeX equations or perfect Markdown documents. It is simply a quick walk through of what is possible. And after all, we are interested in the final code and a little less about what is italic and bold in your text…",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Quarto & The Markdown Language</span>"
+    ]
+  },
+  {
+    "objectID": "appendix/rmarkdown.html#including-code",
+    "href": "appendix/rmarkdown.html#including-code",
+    "title": "Appendix A — Quarto & The Markdown Language",
+    "section": "\nA.4 Including code",
+    "text": "A.4 Including code\nSince this is a class on coding in R, you will have to include code in your files. This can be done in two ways. You might want to include code in your text like this data &lt;- read_csv(data). This can be done by fitting two accent grave as you would say in French around the piece of code. When I say accent grave it is the thing on top of à and è. Usually when we speak about a package, a function, an argument or a line of code that we want to specifically present, we put it as a piece of code. Thus, when I speak of the tidyverse package or the install.packages() function, we put two accents grave around the words so that they appear the way they appear in this sentence.\nOr you might want to include a whole chunk of code which then gives you the result in the final output:\n\nx &lt;- 2\ny &lt;- 2\nx + y\n\n[1] 4\n\n\nA whole chunk can be added by either typing the chunk delimiters ```{r} and ``` in two seperate lines. It is much easier if you use your keyboard hotkeys to do that. For Mac use Cmd + Option + I and for Windows use Ctrl + Alt + I . This will automatically generate a chunk in which you can write your code. Within this field, you can write your code, run it, assign variables as you would usually do. Sometimes you might not want to include its results, or the warnings or the chunk itself. Here are the ways to do that:\n\n\ninclude = FALSE prevents code and results from appearing in the finished file. R Markdown still runs the code in the chunk, and the results can be used by other chunks.\n\necho = FALSE prevents code, but not the results from appearing in the finished file. This is a useful way to embed figures.\n\nmessage = FALSE prevents messages that are generated by code from appearing in the finished file.\n\nwarning = FALSE prevents warnings that are generated by code from appearing in the finished.\n\neval = FALSE tells knitr to skip the code in the chunk, but still include the results in the finished file. You can use this if a chunk is very computationally intensive, or if you need to knit the document but the code is not working!\n\nI encourage you to use these different functions at different points. It is no problem if you do not. But for example, when we load our packages that we will need for our R script at the beginning of our code (like this library(tidyverse)), R generates an output in the console which will also appear in the final Markdown document. To prevent the document from showing that, we would have to add the line include = FALSE. It is absolutely fine if you decide to show the code and its result as it is. It might just be a longer document and a little less elegant.\nEven before knitting (producing the final document), you can run the chunks of code. This can be either done on the right side of the chunk by clicking on the “play button” or by simply using your keyboard hotkey that you would usually use to run code. R will immediately show you if there is an issue with your code, just like it would do if this was not a RMarkdown file. The warnings and errors are the same and the troubleshooting process would then also be the same.\nYou are required to put the solutions to the exercises of this class in chunks of codes and discuss them outside of the chunks with some text. You will find instructions within the exercises regarding the interpretation of results or as to why you might have done something in a certain way. These comments must be put outside of the chunks of code. However, if you wish to annotate your code within the chunks, simply use the # as you would do in a normal R file.\n\ndata &lt;- read_csv(\"data.csv\")",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Quarto & The Markdown Language</span>"
+    ]
+  },
+  {
+    "objectID": "appendix/rmarkdown.html#knitting-your-document",
+    "href": "appendix/rmarkdown.html#knitting-your-document",
+    "title": "Appendix A — Quarto & The Markdown Language",
+    "section": "\nA.5 Knitting your document",
+    "text": "A.5 Knitting your document\nI mentioned earlier that you have to “knit” your Quarto document at the end. RStudio compiles the document for you with all the commands and codes you have written. To knit, you need to click on the icon in your top bar above your code where you can see the knitting needle and yarn. The default setting is to produce a document in html format. However, you can also have a PDF document produced that is knitted in LaTeX style. These documents are the ones you have to hand in to me on the Moodle page for this class.\nHowever, please note that any error in your code will result in the document not being able to be knitted. This means that your code must be correct and work in order to create an html or pdf document. This is because in Markdown, most of the time, your results are displayed and based on each other, just like in any other programming. If one place doesn’t work, most of the later ones won’t work either. But R tells you, at the latest during the knitting process, in which line of your code the problem is.\n\n\n\n\n\n\nImportant\n\n\n\nIf you want to send me your script because you have to hand in your homework or because you cannot find a solution, it might happen that your code does not work. This then also means that R cannot knit the document to an html or pdf output. In that case, the chunks of code which are creating problems must be set to eval = FALSE to be included but not run! This way, I can see what you have done and where the problem is while having a knitted/rendered document at the same time!\n\n\nIf you have made it this far, I really hope that this quick setup tutorial for Quarto has helped you. If not, do not hesitate to get in touch and I’ll try to help! I highly encourage you though to play around with it, see what works and what doesn’t. Most of the time a quick Google search solves most of the problems. However, it is my job to help you, so do not hesitate to reach out!",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Quarto & The Markdown Language</span>"
+    ]
+  }
+]
