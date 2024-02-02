@@ -137,8 +137,9 @@ data <- data |> select(-c(4, 5))
 Now that we have set up our data frame, we can build our OLS model. For that, we can simply use the `lm()` function that comes with Base R, it is built into R so to speak. In this function, we specify the data and then construct the model by using the tilde (`~`) between the dependent variable and the independent variable(s). Store your model in an object which can later be subject to further treatment and analysis.
 
 ```{r}
-model <- lm(final_exam ~ midterm, data = data)
+model <- lm(final_exam ~ midterm, data_model)
 summary(model)
+
 ```
 
 Since the `summary()` function only shows us something in our console and the output is not very pretty, I encourage you to use the `broom` package for a nicer regression table.
