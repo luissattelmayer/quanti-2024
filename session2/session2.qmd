@@ -104,7 +104,7 @@ At this point, you should all check out the codebook of this data set and take a
 
 ```{r}
 summary(ess$vote) 
-# remember that you can summarize() both dataframes and individual variables
+# remember that you can summary() both dataframes and individual variables
 ```
 
 Or in a table containing the amount of times that a value was given: 
@@ -209,16 +209,12 @@ unwanted_numbers <- c(66, 77, 88, 99, 7777, 8888, 9999)
 ess_final <- ess |> 
   # filtering the dependent variable to get rid of any unnecessary rows
   filter(!vote %in% c(3, 7, 8, 9)) |> 
-  # using the naniar package, we can transform unwanted values to NAs
-  naniar::replace_with_na_all(condition = ~.x %in% unwanted_numbers) |> 
   # mutate allows us to transform values within variables into other 
   # values or NAs
   # vote as binary 1 (voted) & 0 (abstention)
-  mutate(vote = ifelse(vote == 1, 1, 0), 
-         # replace values 7 to 9 with NAs
-         polintr = replace(polintr, polintr %in% c(7:9), NA),
-         # replace values 7 to 9 with NAs
-         clsprty = replace(clsprty, clsprty %in% c(7:9), NA),
+  mutate(across(c(polintr, clsprty), ~replace(., . %in% c(7:9), NA)),
+         across(everything(), ~replace(., . %in% unwanted_numbers, NA)),
+         vote = ifelse(vote == 1, 1, 0),
          # recode the variable to 0 and 1
          clsprty = recode(clsprty, `1` = 1, `2` = 0),
          # same for gender

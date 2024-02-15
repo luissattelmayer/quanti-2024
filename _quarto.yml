@@ -27,9 +27,11 @@ book:
   appendices:
     - appendix/rmarkdown.qmd
     - appendix/webscraping.qmd
+    - appendix/text-as-data.qmd
 
 
 
+bibliography: Meine Bibliothek.bib
 
 
 format:
