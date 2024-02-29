@@ -175,17 +175,7 @@ ess$vote[ess$vote == 2] <- 0
 
 
 
-We are *this* close to having finished our data management part and to being able to finally work on our model. But we still have many many variables which are as "untidy" as our initial dependent variable was.
-If you know what the values are that you do not want -- and if you are **absolutely certain** that they are not important in other variables -- there is a quick way of getting rid of these. How am I absolutely certain that I can confidently transform the rows containing certain values without losing information? The answer always lies in the code book :) 
-
-```{r}
-library(naniar)
-unwanted_numbers <- c(66, 77, 88, 99, 7777, 8888, 9999)
-ess_clean <- ess |> 
-  replace_with_na_all(condition = ~.x %in% unwanted_numbers)
-```
-
-Lastly, and I promise that this is the last data wrangling part for today and that we will get to our model in a moment, we need to check in the code book if specific values that we cannot simply replace over the whole data frame are still void of interest. 
+We are *this* close to having finished our data management part and to being able to finally work on our model. But we still have many many variables which are as "untidy" as our initial dependent variable was. Lastly, and I promise that this is the last data wrangling part for today and that we will get to our model in a moment, we need to check in the code book if specific values that we cannot simply replace over the whole data frame are still void of interest. 
 
 Our independent variables of interest: 
 
@@ -198,9 +188,64 @@ Our independent variables of interest:
 7. years of full-time education completed (eduyrs): already done
 
 
-We will do every single step at once now using the pipes `%>%` (`tidyverse`) or `|>` (Base R) to have a tidy and elegant way of doing everything at once:
+We will do every single step at once now using the pipes `%>%` (`tidyverse`) or `|>` (Base R) to have a tidy and elegant way of doing everything at once. 
+
+Below you can see that I first `filter()` out the unwanted values of our dependent variable. Then open up a `muatate()` in which I manipulate the independent variables which we are going to need for our model. Note how you can separate the different manipulations with a comma within the same function. This renders a very clean and easy to read code. There are several different ways you could do this. The `recode()`, `if_else()` and `case_when()` functions are all very useful for this kind of data wrangling. For clarity, I will use `case_when()` here. There is a newer version of this function called `case_match()` but it is only a couple of months old and for now the documentation of `case_when()` will probably be more helpful.
+
+`case_when()` evaluates a series of conditions and applies the corresponding transformation to each element of a vector or column in a dataset. It's like a more flexible and vectorized version of the if...else statement, allowing for multiple if...else conditions to be checked in a single function call. This is how it reads: 
 
 ```{r}
+#| eval: false
+case_when(
+  condition1 ~ value_if_true1,
+  condition2 ~ value_if_true2,
+  TRUE ~ default_value
+)
+```
+
+With `case_when()`, you list your rules one by one. For each rule, you start with a condition (like "score is 80 or above"), followed by a `~`, and then what you want to happen if that condition is true (like "they get an 'A'"). After listing all your specific rules, you end with a special catch-all rule: `TRUE ~ x`. This is like saying, "For anyone else, or any situation I didn't mention, do this." This `TRUE ~ x` part is crucial. It ensures that if none of the specific conditions match (maybe because of some unexpected situation), you have a default action ready. It's your "in case of anything else" rule.
+
+Now, let's talk about `NA_integer_`. In R, NA means "not available" or missing information. But R is very particular about the kind of data it deals with. If your variable is numeric, R wants to know that even your missing pieces should be numbers. Using `NA_integer_`is your way of telling R, "This is a missing piece of information, but if it were here, it would be a number." It helps keep everything organized and avoids confusion when R is looking through your data. There are also other instances (when recoding character strings for example), where you would use `NA_character_` instead. Pay attention that if you have numeric values with decimal points, you will have to use `NA_real_` instead of `NA_integer_`.
+
+
+```{r}
+ess_final <- ess |> 
+  # Filtering the dependent variable to get rid of any unnecessary rows
+  filter(!vote %in% c(3, 7, 8, 9)) |> 
+mutate(
+    # Recode 'polintr' to drop values 7 to 9
+    polintr = case_when(
+      polintr %in% 7:9 ~ NA_integer_,
+      TRUE ~ polintr
+    ),
+    # Recode 'clsprty' 1/2 into 0/1 and drop 7, 8
+    clsprty = case_when(
+      clsprty == 1 ~ 0,
+      clsprty == 2 ~ 1,
+      clsprty %in% c(7, 8) ~ NA_integer_,
+      TRUE ~ clsprty
+    ),
+    # Recode 'gndr' into 0/1 and handle other cases as NAs
+    gndr = case_when(
+      gndr == 1 ~ 0,
+      gndr == 2 ~ 1,
+      TRUE ~ NA_integer_
+    ),
+    # Recode 'vote' as binary 1 (voted) & 0 (abstention)
+    vote = case_when(
+      vote == 1 ~ 1,
+      TRUE ~ 0
+    )
+  )
+```
+
+
+#### Optional quick/fancy data cleaning
+Edit: I have added a more sophisticated way of cleaning all your variables in one go. I have realized during the first session of session 2 that this might be too overwhelming but I would still like to keep this way of doing things to show you how you can do it in the future. If you wish to stick to the slightly longer but maybe also clearer way above, that is absolutely fine with me! Chose the way that you understand and feel comfortable with. As always, there are a lot of different paths to the same goal in R!
+
+
+```{r}
+#| eval: false
 # specify a string of numbers we are absolutely certain we won't need
 unwanted_numbers <- c(66, 77, 88, 99, 7777, 8888, 9999)
 
