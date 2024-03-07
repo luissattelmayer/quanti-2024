@@ -33,7 +33,7 @@ In this script, I will show you how to construct a multinomial logistic regressi
 
 ## The Logic of multinomial (logistic) Regressions
 
-I have chosen four countries out of which you will be able to choose one later one when I ask you to work on some exercises. For now, I will mainly work on Germany. One of the classic applications of multinomial models in political science is the question of voting behavior, more precisely vote choice. Last week, we have seen the linear model of a logistic regression (logit). It is used in cases when our dependent variable (DV) is binary (0 or 1; true or false; yes or no) which means that we are not allowed to use OLS. The idea of logit can be extended to *unordered categorical or nominal variables* with more than **two** categories, e.g.: Vote choice, Religion, Brands...
+I have chosen four countries out of which you will be able to choose one later one when I ask you to work on some exercises. For now, I will mainly work on Germany. One of the classic applications of multinomial models in political science is the question of voting behavior, more precisely vote choice. Last week, we have seen models of a logistic regression (logit). It is used in cases when our dependent variable (DV) is binary (0 or 1; true or false; yes or no) which means that we are not allowed to use OLS. The idea of logit can be extended to *unordered categorical or nominal variables* with more than **two** categories, e.g.: Vote choice, Religion, Brands...
 
 Instead of one equation modelling the log-odds of $P(X=1)$, we do the same thing but for the amount of categories that we have. In fact, this means that a multinomial model runs several single logistic regressions on something we call a *baseline.* R will choose this baseline to which the categorical values of our DV will then relate. But we can also change it (this is called releveling). This allows us to make very interesting inferences with categorical (or ordinal) variables. If this sounds confusing, you should trust me when I tell you that this will become more straightforward in a second!
 
@@ -55,15 +55,25 @@ My two hypotheses (**H1**) and **H2**) are as follows:
 > **H2**: Having less trust in politicians increases the likelihood of voting for PRRPs than voting for other parties.
 
 
-Now you might notice two things. First, my hypotheses are relatively self-explanatory and you are absolutely right. They are more than that, they are perhaps even self-evident. But to this, I would just reply that this is supposed to be an easy exercise which is supposed to expose you to a multinomial regression and the logic of it. Second, you might see that my hypotheses are relatively broadly formulated. This is because I would like you, later in class, to choose one of the countries of the 9th wave of the ESS and build a model yourselves. By giving you broad hypotheses, you can do this ;) And again, it is only an exercise. We will speak about the good formulation of testable hypotheses again.
+Now you might notice two things. First, my hypotheses are relatively self-explanatory and you are absolutely right. They are more than that, they are perhaps even self-evident. But to this, I would just reply that this is supposed to be an easy exercise which is supposed to expose you to a multinomial regression and the logic of it. Second, you might see that my hypotheses are relatively broadly formulated. This is because I would like you, later in class, to choose one of the countries of the 9th wave of the ESS and build a model yourselves. By giving you broad hypotheses, you can do this ;) 
 
 ```{r}
 # read_csv from the tidyverse package
 ess <- read_csv("ESS9e03_1.csv") |> 
   # dplyr allows me to select only those variables I want to use later
-  select(cntry, prtvtdfr, prtvede1, prtvtddk, prtvtdpl, 
-         imueclt, yrbrn, eduyrs, hinctnta, stflife, trstplt, 
-         blgetmg, gndr) |> 
+  select(cntry, 
+         prtvtdfr, 
+         prtvede1, 
+         prtvtddk, 
+         prtvtdpl, 
+         imueclt, 
+         yrbrn, 
+         eduyrs, 
+         hinctnta, 
+         stflife, 
+         trstplt, 
+         blgetmg, 
+         gndr) |> 
   # based on the selected variables, I filter the dataframe so that I am only
   # left with the data for Germany and Denmark
   filter(cntry %in% c("DE", "DK"))
@@ -74,16 +84,12 @@ Again, every transformation and mutation of variables which you see below is don
 You have seen a similar chunk of code in the last script. See how, once you have a code that works for one dataset, you can use it again?
 
 ```{r}
-# I specify a string of numbers I am 100 % certain that I am not going to need
-unwanted_numbers <- c(66, 77, 88, 99, 7777, 8888, 9999)
-
 # cleaning the dependent variables all over the dataframe
 ess_clean <- ess |>
-  # getting rid of specified unwanted numbers (transforming them into NAs)
-  naniar::replace_with_na_all(condition = ~.x %in% unwanted_numbers) |> 
-  # get rid of unwanted parties by transforming the numeric values into NAs
-  # repeat it for the party voted variables per country 
-    mutate(prtvtdfr = replace(prtvtdfr, prtvtdfr %in% c(1, 2, 10, 12:99), NA),
+    mutate(across(where(is.numeric), ~case_when(
+           . %in% c(66, 77, 88, 99, 7777, 8888, 9999) ~ NA_integer_,
+           TRUE ~ .)),
+      prtvtdfr = replace(prtvtdfr, prtvtdfr %in% c(1, 2, 10, 12:99), NA),
            prtvede1 = replace(prtvede1, !prtvede1 %in% c(1:6), NA),
            prtvtddk = replace(prtvtddk, !prtvtddk %in% c(1:10), NA),
            prtvtdpl = replace(prtvtdpl, !prtvtdpl %in% c(1:8), NA),
@@ -111,7 +117,7 @@ ess_clean$vote_de[ess_clean$prtvede1==6]<-"AFD"
 Here is a way to mutate all the variables at once. However, this somehow creates conflicts with a package used further below.
 
 ```{r}
-ess_test <- ess |> 
+ess_clean <- ess_clean |> 
   mutate(
     vote_dk = case_when(prtvtddk == 1 ~ "Socialdemokratiet",
                         prtvtddk == 2 ~ "Det Radikale Venstre",
@@ -145,7 +151,7 @@ model_de <- multinom(vote_de ~ imueclt  + stflife + trstplt + blgetmg +
 
 model_dk <- multinom(vote_dk ~ imueclt  + stflife + trstplt + blgetmg + gndr +
                      yrbrn + eduyrs + hinctnta,
-                     data = ess_test,
+                     data = ess_clean,
                      Hess = TRUE)
 
 ```
@@ -326,13 +332,13 @@ ggplot(data = pred2$plotdata, aes(
   # taking the mean of the values
   geom_line() +
   # here we display the predicted probabilities for all parties in one plot
-  facet_wrap(. ~ vote_de, scales = "free_y", ncol = 2) +
+  facet_wrap(. ~ vote_de, ncol = 2) +
   # putting the values of the y-axis in percentages
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   # the x-axis follows the 0-10 scale of the predictor
   scale_x_continuous(breaks = c(0:10)) +
   # specifying the ggplot theme
-  theme_bw() +
+  theme_minimal() +
   # lastly you only need to label your axes; Always label your axes ;)
   labs(y = "Predicted probabilities",
        x = "Trust in Politicians") 
@@ -340,7 +346,7 @@ ggplot(data = pred2$plotdata, aes(
 
 Here we can see very well by how many percent the likelihood increases or decreases for each party given that our independent variable, our predictor, of trust in politicians increases (increasing values mean more trust in politicians).
 
-We can also visualize our predicted probabilities in one single plot. I made the effort of coordinating the colors so that they would be displayed in the colors of the parties. If you want to have a color selector to get the HEX color codes, you can click on this link: \href{https://g.co/kgs/6MxyCy}{https://g.co/kgs/6MxyCy} (it will say *Google Farbwähler*, which is not a scam but German...).
+We can also visualize our predicted probabilities in one single plot. I made the effort of coordinating the colors so that they would be displayed in the colors of the parties. If you want to have a color selector to get the HEX color codes, you can click on this link: \href{https://g.co/kgs/6MxyCy}{https://g.co/kgs/6MxyCy} (it will say *Google Farbwähler*, which is not a scam but German...). As by recently, R will also display the color you have selected. 
 
 ```{r}
 ggplot(data = pred2$plotdata, aes(
@@ -366,7 +372,8 @@ ggplot(data = pred2$plotdata, aes(
                "GRUENE", "SPD")
   ) +
   ylab("Predicted Probability Vote") +
-  xlab("Trust in Politicians")
+  xlab("Trust in Politicians") +
+  theme_minimal()
 ```
 
 This here is the plot for our first hypothesis for which we have stored the predicted probabilities in the object `pred1`:
@@ -381,10 +388,10 @@ ggplot(data = pred1$plotdata, aes(
 )) +
   geom_ribbon(alpha = 0.1) + # Confidence intervals
   geom_line() + # Mean
-  facet_wrap(. ~ vote_de, scales = "free_y", ncol = 2) +
+  facet_wrap(. ~ vote_de, ncol = 2) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + # % labels
   scale_x_continuous(breaks = c(0:10)) +
-  theme_bw() +
+  theme_minimal() +
   labs(y = "Predicted probabilities",
        x = "Positivity towards Immigrants") # Always label your axes ;)
 
@@ -424,11 +431,11 @@ ggplot(data = pred1$plotdata, aes(
 
 ## Diagnostics of Multinomial Models
 
-I have talked about diagnostics of models before. This will be the first time that we touch upon that. Usually this is a step which you should take between the building and the interpretation of your model.
+I have talked about diagnostics of models before. This will be the first time that we really touch upon that in models that are not linear like OLS. Usually this is a step which you should take between the building and the final interpretation of your model.
 
-The estimates of your model change depending on several influences. The number of predictors, the scaling of your predictors, the scaling of your dependent variable or the coding of your dependent variable. All these kind of things (and many more) will have an effect on your model's results. We need to be sure that we have a good amount of variables to account for enough variance. But we also need to make sure that we do not overfit our model, meaning that we put in too many predictors for example.
+The estimates of your model change depending on several influences. The number of predictors, the scaling of your predictors, the scaling of your dependent variable or the coding of your dependent variable. All these kind of things (and many more) will have an effect on your model's results. We need to be sure that we have a good amount of variables to account for enough variance. But we also need to make sure that we do not overfit our model, meaning that we put in too many predictors for example. We also need to make sure that our model is not biased by the scaling of our variables. This is why we need to check for multicollinearity, heteroskedasticity and other things.
 
-We are firstly concerned with the goodness of fit of our model. In a linear model using the OLS method, we have looked at the $R^2$ and adjusted $R^2$ of the models. This tells us something about how much variance of the DV is explained by our IVs. Unfortunately, this measure does not exist for logits or multinomial models. But the good news is that we can calculate something that is called McFadden's Pseudo $R^2$. It is interpreted in a similar way as you would do it with a normal $R^2$ meaning that anything ranging between 0.2 and 0.4 is a result that should make us happy.
+We are firstly concerned with the goodness of fit of our model. In a linear model using the OLS method, we have looked at the $R^2$ and adjusted $R^2$ of the models. This tells us something about how much variance of the DV is explained by our IVs. Unfortunately, this measure does not exist for logistic or multinomial models. But the good news is that we can calculate something that is called McFadden's Pseudo $R^2$. It is interpreted in a similar way as you would do it with a normal $R^2$ meaning that anything ranging between 0.2 and 0.4 is a result that should make us happy.
 
 This is how you do this in R:
 
@@ -483,9 +490,9 @@ What is a better AIC? The **lower** AIC indicates that the model fits our data b
 
 ### BIC (Bayesian Information Criterion)
 
-I have a strong fascination for Bayesian Statistics [^session3-1] and will include them wherever I can. Luckily, the BIC is very common and is to the AIC what the adjusted $R^2$ is to the $R^2$. This means that it is a "stricter" measure of goodness of fit than the AIC. It is quite similar to the AIC but differs in that it penalizes you for adding "less useful" variables to your model (*overfitting* or overcomplexifing your model). Thus, similarly to the AIC, we should also favor the **lower** BIC.
+Bayesian Statistics [^session3-1] are super fascinating and I will include them wherever I can. Luckily, the BIC is very common and is to the AIC what the adjusted $R^2$ is to the $R^2$. This means that it is a "stricter" measure of goodness of fit than the AIC. It is quite similar to the AIC but differs in that it penalizes you for adding "less useful" variables to your model (potentially *overfitting* or overcomplexifing your model). Thus, similarly to the AIC, we should also favor the **lower** BIC!
 
-[^session3-1]: The second school of doing statistics. What we are doing is called *frequentist* statistics. Bayesian statistics are a bit more complicated and require a different way of thinking about statistics. They are also more computationally expensive and thus, not as common. However, they are gaining more and more popularity. If you are interested in learning more about them, I recommend the book by Richard McElreath (2016) [*Statistical Rethinking: A Bayesian Course with Examples in R and Stan*](https://github.com/rmcelreath/stat_rethinking_2024).
+[^session3-1]: The second school of doing statistics. What we are doing is called *frequentist* statistics. Bayesian statistics are a bit more complicated and require a different way of thinking about statistics but they are the more intuitive way of conducting statistics (without p-values but with something you could call *certainty*). They are also more computationally expensive and thus, have only gained traction over the recent decades. They are gaining more and more popularity. If you are interested in learning more about them, I recommend the book by Richard McElreath (2016) [*Statistical Rethinking: A Bayesian Course with Examples in R and Stan*](https://github.com/rmcelreath/stat_rethinking_2024). He also has lectures on YouTube that follow the book. Definitely worth a try!
 
 
 

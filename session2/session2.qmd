@@ -4,6 +4,7 @@ author: "Luis Sattelmayer"
 ---
 
 ## Introduction
+
 You have seen the logic of Logistic Regressions with Professor Rovny in the lecture. In this lab session, we will understand how to apply this logic to R and how to build a model, interpret and visualize its results and how to run some diagnostics on your models. 
 If the time allows it, I will also show you how automatize the construction of your model and run several logistic regressions for many countries at once.
 
@@ -22,7 +23,7 @@ As I have mentioned last session, I will try to gradually increase the data clea
 
 
 ```{r}
-# these are the packages, I will need for this session
+# these are the packages, I will need for this session 
 library(tidyverse)
 ```
 
@@ -93,7 +94,7 @@ ess <- read_csv("ESS_10_fr.csv") |>
     uemp12m,
     uemp5yr
   ) |>
-  filter(cntry == "FR")
+  filter(cntry != "FR")
 ```
 
 This only leaves us with the values for France!
@@ -160,7 +161,7 @@ Perfect, now we just need to transform the ones and twos into zeros and ones. Th
 ess <- ess |> 
   mutate(vote = ifelse(vote == 1, 1, 0))
 ```
-The mutate() function is not perfectly intuitive at first sight. Here, I use the `ifelse()` function within `mutate()` to check if vote is equal to 1, if it is then it will be replaced by 0 and if not it will be replaced by 1.
+The mutate() function is not perfectly intuitive at first sight. Here, I use the `ifelse()` function within `mutate()` to check if vote is equal to 1, if it is then it will remain 1 and if not it will be replaced by 0.
 
 
 In Base R, you could do it like this but I believe that the `mutate()` function is probably the most elegant way of doing things... It's up to you though:
