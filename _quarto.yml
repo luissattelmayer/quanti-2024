@@ -15,19 +15,21 @@ book:
     - part: "Introduction"
       chapters: 
         - index.qmd
-    - part: "Session 1"
+    - part: "OLS Recap"
       chapters:
         - session1/session1.qmd
-    - part: "Session 2"
+    - part: "Logistic Regression"
       chapters:
         - session2/session2.qmd
-    - part: "Session 3"
+    - part: "Multinomial Regression"
       chapters:
         - session3/session3.qmd
+    - part: "Time Series"
+      chapters:
+        - session6/session6.qmd
   appendices:
     - appendix/rmarkdown.qmd
     - appendix/webscraping.qmd
-    - appendix/text-as-data.qmd
 
 
 

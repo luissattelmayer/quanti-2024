@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>session4</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="session4_files/libs/clipboard/clipboard.min.js"></script>
+<script src="session4_files/libs/quarto-html/quarto.js"></script>
+<script src="session4_files/libs/quarto-html/popper.min.js"></script>
+<script src="session4_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="session4_files/libs/quarto-html/anchor.min.js"></script>
+<link href="session4_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="session4_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="session4_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="session4_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="session4_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="session4_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="session4_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="diff-in-diff" class="level1">
+<h1>Diff-in-Diff</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This week we will start talking about Causal Inference in R. You will have already seen the theoretical and mathematical parts with Brenda in the lecture. This script is supposed to initiate you to the practical part of Causal Inference.</p>
+<p>This session will show you how to :</p>
+<ol type="1">
+<li>Visualize causality in R</li>
+<li>Prepare data for Causal Inference</li>
+<li>Perform a simple Diff-in-Diff analysis in R</li>
+<li>Interpret the results of a Diff-in-Diff analysis in R</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'ggdag'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    filter</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>podcast_dag <span class="ot">&lt;-</span> <span class="fu">dagify</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  podcast <span class="sc">~</span> mood <span class="sc">+</span> humor <span class="sc">+</span> prepared,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  exam <span class="sc">~</span> mood <span class="sc">+</span> prepared,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">coords =</span> <span class="fu">time_ordered_coords</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="co"># time point 1</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"prepared"</span>, <span class="st">"humor"</span>, <span class="st">"mood"</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="co"># time point 2</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"podcast"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="co"># time point 3</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"exam"</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"podcast"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"exam"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">podcast =</span> <span class="st">"podcast"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">exam =</span> <span class="st">"exam score"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">mood =</span> <span class="st">"mood"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">humor =</span> <span class="st">"humor"</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">prepared =</span> <span class="st">"prepared"</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ggdag</span>(podcast_dag, <span class="at">use_labels =</span> <span class="st">"label"</span>, <span class="at">text =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dag</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session4_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="visualize-causality-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="visualize-causality-in-r">Visualize causality in R</h2>
+<p>The first step in any causal inference analysis is to visualize the causal graph. This is a graphical representation of the relationships between the variables in the analysis.</p>
+<p>Showing causality graphically and the fact that it only runs in <em>one</em> direction have not always been the case in the history of statistics. As a matter of fact, it took us a long time to figure out what causality even really is and then another time to figure out how to display this in some way <span class="citation" data-cites="pearl_book_2018">[@pearl_book_2018]</span>. One of Judea Pearl’s biggest contributions was that of graphical models for causality in form of <em>Directed Acyclic Graphs</em> which we will henceforth call DAG(s) <span class="citation" data-cites="pearl_causal_1995">[@pearl_causal_1995]</span>.</p>
+</section>
+<section id="diff-in-diff-1" class="level2">
+<h2 class="anchored" data-anchor-id="diff-in-diff-1">Diff-in-Diff</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom.mixed)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estimatr)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Version 2.0.0 of `modelsummary`, to be released soon, will introduce a
+  breaking change: The default table-drawing package will be `tinytable`
+  instead of `kableExtra`. All currently supported table-drawing packages
+  will continue to be supported for the foreseeable future, including
+  `kableExtra`, `gt`, `huxtable`, `flextable, and `DT`.
+  
+  You can always call the `config_modelsummary()` function to change the
+  default table-drawing package in persistent fashion. To try `tinytable`
+  now:
+  
+  config_modelsummary(factory_default = 'tinytable')
+  
+  To set the default back to `kableExtra`:
+  
+  config_modelsummary(factory_default = 'kableExtra')</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rdrobust)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Rcpp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is rstanarm version 2.32.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- See https://mc-stan.org/rstanarm/articles/priors for changes to default priors!</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- Default priors may change, so it's safest to specify priors, even if equivalent to the defaults.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- For execution on a local, multicore CPU with excess RAM we recommend calling</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  options(mc.cores = parallel::detectCores())</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ readr::col_factor() masks scales::col_factor()
+✖ purrr::discard()    masks scales::discard()
+✖ dplyr::filter()     masks ggdag::filter(), stats::filter()
+✖ dplyr::lag()        masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+</div>
+<p>For the first example on Diff-in-Diff I am going to use the code written by the brilliant <a href="https://rohanalexander.com/">Rohan Alexander</a> who has written the probably best introductio to Data Analysis in R which you can finde <a href="https://tellingstorieswithdata.com/">here</a>. Furthermore, the example he uses is a paper written by <a href="https://sites.google.com/site/charlesangelucci/">Charles Angelucci</a> and <a href="https://juliacage.com/fr/">Julia Cagé</a> who you probably know already.</p>
+<p>The paper is called “Newspapers in Times of Low Advertising Revenues” <span class="citation" data-cites="angelucci_newspapers_2019">[@angelucci_newspapers_2019]</span> and follows a difference-in-difference analysis and it also comes with replication material which means that we can try to emulate their results.</p>
+<p>In 1967, the French government introduced advertisements on French TV programs. This led to a decrease in advertising revenues for newspapers all over France. The idea is therefore to understand if and how the introduction of ads on TV affected the ad revenues for newspapers, both local and national ones, in France. They use a difference-in-difference approach to estimate the effect of the introduction of advertising on the advertising revenues of newspapers. Thus, the treatment is…? Exactly, the introduction of ads on TV. Angelucci and Cagé argue that national newspapers were more affected by this change than local newspapers. They have many more hypotheses which they test in this paper, but for now we will focus on this one. As mentioned above, their <a href="https://www.openicpsr.org/openicpsr/project/116438/version/V1/view">data is available</a> and we can use it to replicate their results. You need to sign up, to get it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>newspapers <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"data/Angelucci_Cage_AEJMicro_dataset.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next we will have to do some minor data management. Fortunately enough, this replication material is already pretty clean and we do not have to <code>mutate()</code> or <code>filter()</code> our way around too much. The only thing we actually have to do, is to convert some variables into factors and to create a new variable which is the ratio of advertising revenue over circulation. Here I specify the argument <code>across()</code> again of the <code>mutate()</code> function and within it, I give a vector <code>c()</code> containing all the variables that should be transformed to factors.</p>
+<p>Here is a brief explanation of the variables in the dataset:</p>
+<ul>
+<li><code>year</code>: The year of the observation</li>
+<li><code>id_news</code>: A unique identifier for each newspaper</li>
+<li><code>local</code>: A binary indicator (0 or 1) representing whether a newspaper is local or national (1 = local, 0 = national)</li>
+<li><code>national</code>: A binary indicator (0 or 1) representing whether a newspaper is national or local (1 = national, 0 = local)</li>
+<li><code>ra_cst</code>: The advertising revenue of the newspaper (in constant (2014) euros)</li>
+<li><code>ps_cst</code>: The price of subscriptions for the newspaper. This variable measures how much the newspaper charges for its subscriptions, reflecting its pricing strategy and revenue from readers</li>
+<li><code>qtotal</code>: The circulation of the newspaper. This variable measures the number of copies sold, reflecting the newspaper’s readership and revenue from readers</li>
+<li><code>after_national</code>: A binary indicator (0 or 1) representing the interaction between a newspaper’s national status and the post-television advertising era. Specifically, it marks the period after a newspaper has started national circulation and also corresponds to times after the introduction or significant increase of television advertising. This variable is designed to capture the combined effects of a newspaper reaching a national audience and the competitive or complementary impacts of television advertising on newspaper revenues or strategies</li>
+<li><code>ra_cst_div_qtotal</code>: A derived variable representing the advertising revenue per unit of circulation (<code>ra_cst / qtotal</code>). This variable is calculated to assess the efficiency or effectiveness of advertising revenue in relation to the newspaper’s circulation size</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>newspapers <span class="ot">&lt;-</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  newspapers <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    year, id_news, after_national, local, national, ra_cst, ps_cst, qtotal</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ra_cst_div_qtotal =</span> ra_cst <span class="sc">/</span> qtotal, </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">c</span>(id_news, after_national, local, national), as.factor),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">as.integer</span>(year)) <span class="sc">|&gt;</span> </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>()</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>newspapers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,196 × 9
+    year id_news after_national local national    ra_cst ps_cst  qtotal
+   &lt;int&gt; &lt;fct&gt;   &lt;fct&gt;          &lt;fct&gt; &lt;fct&gt;        &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+ 1  1960 1       0              1     0         52890272   2.29  94478.
+ 2  1961 1       0              1     0         56601060   2.20  96289.
+ 3  1962 1       0              1     0         64840752   2.13  97313.
+ 4  1963 1       0              1     0         70582944   2.43 101068.
+ 5  1964 1       0              1     0         74977888   2.35 102103.
+ 6  1965 1       0              1     0         74438248   2.29 105169.
+ 7  1966 1       0              1     0         81383000   2.31 126235.
+ 8  1967 1       0              1     0         80263152   2.88 128667.
+ 9  1968 1       0              1     0         87165704   3.45 131824.
+10  1969 1       0              1     0        102596384   3.28 132417.
+# ℹ 1,186 more rows
+# ℹ 1 more variable: ra_cst_div_qtotal &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>This here is the regression formula for the DiD analysis, including the interaction term in which we specify the treatment. The treatment is the introduction of ads on TV and the interaction term is the product of the treatment and the national status of the newspaper</p>
+<p><span class="math display">\[
+\ln(\mathrm{ra\_cst}) = \beta_0 + \beta_1 \mathrm{national} + \beta_2 \mathrm{after\_national} + \beta_3(\mathrm{national} \times \mathrm{after\_national}) + \beta_4 \mathrm{year} + \alpha_i + \epsilon
+\]</span> - <code>ln(ra_cst)</code>: The natural logarithm of advertising revenue for a newspaper. Log transformation is often used in economic data to help normalize the distribution of skewed variables and to interpret the coefficients in terms of percentage changes</p>
+<ul>
+<li><p><code>national</code>: This is a dummy variable indicating whether a newspaper is national (1) or local (0). This variable distinguishes the treatment group from the control group.</p></li>
+<li><p><code>afternational</code>: A dummy variable indicating the time period after the introduction of television advertising in 1967 (1 for years 1967 and later, 0 for earlier years). It captures the before-and-after comparison.</p></li>
+<li><p><code>national*after_national</code>: The interaction term between national and after_national. This term is crucial for DiD analysis as it estimates the differential effect of the introduction of television advertising on national newspapers compared to local newspapers over time</p></li>
+<li><p><code>year</code>: A continuous variable representing the year of observation. Including this allows controlling for linear time trends that affect all newspapers</p></li>
+<li><p><code>alpha</code>: Newspaper fixed effects that control for all unobserved, time-invariant differences between newspapers</p></li>
+<li><p><code>epsilon</code>: The error term</p></li>
+</ul>
+<p>This is the code to specify exactly this. Note that in R <code>national * after_national</code> includes three variables due to the <code>*</code> operator. It specifies the main effect of <code>national</code>, the main effect of <code>after_national</code> <strong>and</strong> the interaction effect <code>national:after_national</code>, representing the differential impact of the post-television advertising period specifically on national newspapers relative to local ones. If we had only put in <code>national:after_national</code>, we would have only included the interaction term and would have had to add the main effects manually. This means that the formula <code>log(ra_cst) ~ national*after_national + ...</code> is shorthand for <code>log(ra_cst) ~ national + after_national + national:after_national + ...</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>newspaper_did_model <span class="ot">&lt;-</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="fu">log</span>(ra_cst) <span class="sc">~</span> national <span class="sc">*</span> after_national <span class="sc">+</span> year <span class="sc">+</span> id_news,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> newspapers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>selected_variables <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>, <span class="st">"after_national"</span> <span class="ot">=</span> <span class="st">"After change"</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(newspaper_did_model,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fmt =</span> <span class="dv">2</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">coef_map =</span> selected_variables</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;(1)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Year</td>
+<td style="text-align: center;">0.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;">(0.00)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Num.Obs.</td>
+<td style="text-align: center;">1052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2</td>
+<td style="text-align: center;">0.985</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2 Adj.</td>
+<td style="text-align: center;">0.984</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIC</td>
+<td style="text-align: center;">36167.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIC</td>
+<td style="text-align: center;">36574.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Log.Lik.</td>
+<td style="text-align: center;">345.341</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RMSE</td>
+<td style="text-align: center;">0.17</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(newspaper_did_model,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">title =</span> <span class="st">"Difference-in-Differences Model Summary"</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>             <span class="co"># omit the fixed effects</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">coef_omit =</span> <span class="st">"id_news</span><span class="sc">\\</span><span class="st">d+"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">estimate =</span> <span class="st">"{estimate} ({std.error})"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">stars =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Difference-in-Differences Model Summary</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;(1)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">−72.099 (2.896)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">(2.896)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">national1</td>
+<td style="text-align: center;">−1.039 (0.078)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">(0.078)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">after_national1</td>
+<td style="text-align: center;">−0.229 (0.031)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">(0.031)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">year</td>
+<td style="text-align: center;">0.046 (0.001)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;">(0.001)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Num.Obs.</td>
+<td style="text-align: center;">1052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2</td>
+<td style="text-align: center;">0.985</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2 Adj.</td>
+<td style="text-align: center;">0.984</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIC</td>
+<td style="text-align: center;">36167.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIC</td>
+<td style="text-align: center;">36574.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Log.Lik.</td>
+<td style="text-align: center;">345.341</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RMSE</td>
+<td style="text-align: center;">0.17</td>
+</tr>
+</tbody><tfoot>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+
+
+</div>
+</div>
+<p>The intercept we can disregard in this case. As a reminder, it is when all IVs are set to 0. It does not really make sense in our case, especially due to the year variable.</p>
+<p><code>national1</code> is equal to -1.039. For national newspapers, the log of advertising revenue is, on average, 1.039 units lower than that of local newspapers, holding other factors constant. This effect is statistically significant given the small standard error (0.078), indicating a consistent difference between national and local newspapers in terms of advertising revenue. The coefficient for the period after the introduction of national television advertising (after_national1) is of -0.001 and thus suggests a negligible and statistically insignificant decrease in the log of advertising revenue across all newspapers, with a standard error of 0.022. This implies that the mere passage of time after the introduction of television advertising has no significant overall effect on newspaper advertising revenue.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
