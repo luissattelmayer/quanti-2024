@@ -13,6 +13,7 @@ This session will show you how to :
 ```{r}
 #| messages: false
 #| warnings: false
+
 library(haven)
 library(knitr)
 library(modelsummary)
@@ -25,7 +26,7 @@ library(tidyverse)
 
 
 ## Diff-in-Diff
-For the first example on Diff-in-Diff I am going to use the code written by the brilliant [Rohan Alexander](https://rohanalexander.com/) who has written the probably best introductio to Data Analysis in R which you can finde [here](https://tellingstorieswithdata.com/). Furthermore, the example he uses is a paper written by [Charles Angelucci](https://sites.google.com/site/charlesangelucci/) and [Julia Cagé](https://juliacage.com/fr/) who you probably know already. 
+For the first example on Diff-in-Diff I am going to use the code written by the brilliant [Rohan Alexander](https://rohanalexander.com/) who has written one of the (if not *the*) best introduction to Data Analysis in R which you can find [here](https://tellingstorieswithdata.com/). Furthermore, the example he uses is a paper written by [Charles Angelucci](https://sites.google.com/site/charlesangelucci/) and [Julia Cagé](https://juliacage.com/fr/) who you probably know already. 
 
 The paper is called "Newspapers in Times of Low Advertising Revenues" [@angelucci_newspapers_2019] and follows a difference-in-difference analysis and it also comes with replication material which means that we can try to emulate their results.
 
@@ -129,6 +130,10 @@ newspaper_did_model <-
      data = newspapers)
 ```
 
+You can see that this is as straightforward as what we have already done in Session 1. It is a simple `lm()` and an interaction effect; nothing more...
+
+### Interpreting the DiD model results
+Here, I am showing you a different way of displaying models in R/Quarto. I am making use of the fact that my quartobook is rendered to html. I am using the `modelsummary` package to display the results of the model in a nice table. Similar to the `stargazer` package, you can change almost every aspect of the table. I am using the `coef_omit` argument to exclude the fixed effects of the individual newspapers from the table. This is because we are not interested in them and it would have given us a lot of coefficients. I am also using the `coef_map` argument to rename the coefficients in the table. This package is maybe a bit more advanced but also more versatile.
 
 ```{r}
 model_coefs <- c(
@@ -162,8 +167,6 @@ This table reports the results from a difference-in-differences (DiD) regression
 - **Interaction Effect (National * After TV Ads)**: This is the center piece of our model since we try to estimate the causal effect through this interaction term. Fortunately for us, it is significant and negative (-0.228, p < 0.001). In DiD analyses, this interaction term captures the differential impact of the treatment effect (here, the introduction of television ads) on the treated group (national newspapers). The negative sign suggests that after television advertising started, national newspapers experienced a significant decrease in advertising revenue compared to local newspapers. This term essentially captures the essence of the DiD strategy by showing the relative effect post-treatment for the group of interest! 
 
 
-The model's diagnostics indicate a very high R-squared value (0.985), which suggests that the model explains a large proportion of the variance in advertising revenue. The Root Mean Square Error (RMSE) is relatively low at 0.17, which suggests that the model's predictions are close to the actual values.
-
 So what do we conclude now? Concerning our Difference-in-Difference causal design, the model supports the hypothesis that the introduction of television advertising had a different negative impact on national newspapers' advertising revenues compared to local newspapers! The DiD model effectively isolates this effect by comparing the changes in revenues over time between the two groups (of course assuming parallel trends before the treatment).
 
 
@@ -171,5 +174,6 @@ So what do we conclude now? Concerning our Difference-in-Difference causal desig
 
 
 ## References
-
+:::{#refs}
+:::
 
