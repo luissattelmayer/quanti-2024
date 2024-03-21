@@ -31,7 +31,6 @@ book:
       chapters:
         - session6/session6.qmd
   appendices:
-    - appendix/rmarkdown.qmd
     - appendix/webscraping.qmd
 
 
