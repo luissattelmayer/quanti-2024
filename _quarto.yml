@@ -24,6 +24,9 @@ book:
     - part: "Multinomial Regression"
       chapters:
         - session3/session3.qmd
+    - part: "Diff-in-Diff"
+      chapters: 
+        - session4/session4.qmd
     - part: "Time Series"
       chapters:
         - session6/session6.qmd
