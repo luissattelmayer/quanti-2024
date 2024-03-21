@@ -67,27 +67,36 @@ library(tidyverse)
 
 
 ```{r}
-# for the download of the dataset, please click on the link for 
+# for the download of the dataset, please click on the link for
 # of this script the CMP in this script
-cmp <- read_csv("data/cmp.csv") |> 
+cmp <- read_csv("data/cmp.csv") |>
   # I only import the variables I am interested in; check the codebook first
   # ALWAYS
-  select(country, partyname, date, rile, per602_2, per601_2, per607, per608) |>
+  select(country,
+         partyname,
+         date,
+         rile,
+         per602_2,
+         per601_2,
+         per607,
+         per608) |>
   # this is an old code I have used; 41 = Germany (check out the codebook)
-  filter(country == 41) |> 
+  filter(country == 41) |>
   # here I align the names as there are some inconsistencies over the years
-  mutate(party = case_when(
-    partyname == "Alliance‘90/Greens" ~ "Grüne",
-    partyname == "Greens/Alliance‘90" ~ "Grüne",
-    partyname == "Alternative for Germany" ~ "AFD",
-    partyname == "Christian Democratic Union/Christian Social Union" ~ "CDU/CSU",
-    partyname == "Free Democratic Party" ~ "FDP",
-    partyname == "Party of Democratic Socialism" ~ "Linke",
-    partyname == "Social Democratic Party of Germany" ~ "SPD",
-    partyname == "The Left" ~ "Linke",
-    TRUE ~ NA_character_
-  ),
-  year = str_sub(date, 1, 4))
+  mutate(
+    party = case_when(
+      partyname == "Alliance‘90/Greens" ~ "Grüne",
+      partyname == "Greens/Alliance‘90" ~ "Grüne",
+      partyname == "Alternative for Germany" ~ "AFD",
+      partyname == "Christian Democratic Union/Christian Social Union" ~ "CDU/CSU",
+      partyname == "Free Democratic Party" ~ "FDP",
+      partyname == "Party of Democratic Socialism" ~ "Linke",
+      partyname == "Social Democratic Party of Germany" ~ "SPD",
+      partyname == "The Left" ~ "Linke",
+      TRUE ~ NA_character_
+    ),
+    year = str_sub(date, 1, 4)
+  )
 ```
 
 ### Quick excursion: the `stringr` package
@@ -123,10 +132,15 @@ spd <- cmp |>
 We are, however, not interested in the mean position over time but the inidividual values over time. The first thing you should always do, when working with time series data, is to plot your variable of interest. It's like looking at a data set when you first import it. Sometimes you can already detect things like seasonality that we will test for either way:
 
 ```{r}
-ggplot(cdu, aes(year, rile)) + 
-  geom_line(aes(group = party)) + 
-  geom_point(alpha = 0.5, shape=20, size=2) +
-   labs(title = "RILE CDU/CSU over time", x = "Year", y = "Right to Left") +
+cdu |>
+  ggplot(aes(year, rile)) +
+  geom_line(aes(group = party)) +
+  geom_point(alpha = 0.5,
+             shape = 20,
+             size = 2) +
+  labs(title = "RILE CDU/CSU over time", 
+       x = "Year", 
+       y = "Right to Left") +
   theme_minimal()
 ```
 
@@ -192,12 +206,21 @@ If we create a lagged variable (lag_cultposition) for cultposition, it would loo
 By creating this lagged variable, you can analyze how a variable changes over time and whether previous values of the variable have an effect on current values.
 ```{r}
 library(tidyverse)
-tac <- haven::read_dta("data/cmp_abouchadi.dta") |> 
+tac <- haven::read_dta("data/cmp_abouchadi.dta") |>
   # as you can see the author provided a pre-cleaned, all set reproduction data-
   # set which is seriously great!
-  select(countryname, cultposition, sumright, rileright, limmig, govparty,
-         pervote, partyname, date) |> 
-  group_by("partyname") |> 
+  select(
+    countryname,
+    cultposition,
+    sumright,
+    rileright,
+    limmig,
+    govparty,
+    pervote,
+    partyname,
+    date
+  ) |>
+  group_by("partyname") |>
   # lag() from the dplyr package will create a lagged variable for cultposition
   mutate(lag_cultposition = dplyr::lag(cultposition))
 ```
@@ -252,6 +275,8 @@ stargazer::stargazer(
   )
 )
 ```
+
+
 If we look at our models and compare it, we do see differences in both statistical significance but also strength of effect. Remember that these are OLS regressions which is why we can interpret the coefficients directly. In both fixed and random effects models, our hypothesis on radical right support at the election prior to this one has a positive influence on the dependent variable. This means in return that mainstream competitors tend to adjust their position on multiculturalism towards more anti-multiculturalist stances if the radical-right party had a good score at the elections $t-1$. \par 
 If you compare this model to the one in the Abou-Chadi paper, you can see that our results are not the same nor are the model diagnostics. This is because the author has used a slightly different model which is close to the two we are seeing here. However, we do not cover it in this class. I am hinting at PCSE (Panel Corrected Standard Error) models which were developed in quite a famous paper by @beck_what_1995. \par
 

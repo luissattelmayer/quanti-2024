@@ -113,76 +113,20 @@ window.Quarto = {
 
 <section id="diff-in-diff" class="level1">
 <h1>Diff-in-Diff</h1>
+<style>body {text-align: justify}</style>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>This week we will start talking about Causal Inference in R. You will have already seen the theoretical and mathematical parts with Brenda in the lecture. This script is supposed to initiate you to the practical part of Causal Inference.</p>
 <p>This session will show you how to :</p>
 <ol type="1">
-<li>Visualize causality in R</li>
 <li>Prepare data for Causal Inference</li>
 <li>Perform a simple Diff-in-Diff analysis in R</li>
 <li>Interpret the results of a Diff-in-Diff analysis in R</li>
 </ol>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'ggdag'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:stats':
-
-    filter</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>podcast_dag <span class="ot">&lt;-</span> <span class="fu">dagify</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  podcast <span class="sc">~</span> mood <span class="sc">+</span> humor <span class="sc">+</span> prepared,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  exam <span class="sc">~</span> mood <span class="sc">+</span> prepared,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">coords =</span> <span class="fu">time_ordered_coords</span>(</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="co"># time point 1</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"prepared"</span>, <span class="st">"humor"</span>, <span class="st">"mood"</span>),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="co"># time point 2</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"podcast"</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="co"># time point 3</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"exam"</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"podcast"</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"exam"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">podcast =</span> <span class="st">"podcast"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">exam =</span> <span class="st">"exam score"</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">mood =</span> <span class="st">"mood"</span>,</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">humor =</span> <span class="st">"humor"</span>,</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">prepared =</span> <span class="st">"prepared"</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ggdag</span>(podcast_dag, <span class="at">use_labels =</span> <span class="st">"label"</span>, <span class="at">text =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dag</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="session4_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="visualize-causality-in-r" class="level2">
-<h2 class="anchored" data-anchor-id="visualize-causality-in-r">Visualize causality in R</h2>
-<p>The first step in any causal inference analysis is to visualize the causal graph. This is a graphical representation of the relationships between the variables in the analysis.</p>
-<p>Showing causality graphically and the fact that it only runs in <em>one</em> direction have not always been the case in the history of statistics. As a matter of fact, it took us a long time to figure out what causality even really is and then another time to figure out how to display this in some way <span class="citation" data-cites="pearl_book_2018">[@pearl_book_2018]</span>. One of Judea Pearl’s biggest contributions was that of graphical models for causality in form of <em>Directed Acyclic Graphs</em> which we will henceforth call DAG(s) <span class="citation" data-cites="pearl_causal_1995">[@pearl_causal_1995]</span>.</p>
-</section>
-<section id="diff-in-diff-1" class="level2">
-<h2 class="anchored" data-anchor-id="diff-in-diff-1">Diff-in-Diff</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom.mixed)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estimatr)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-messages="false" data-warnings="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Version 2.0.0 of `modelsummary`, to be released soon, will introduce a
   breaking change: The default table-drawing package will be `tinytable`
@@ -200,51 +144,33 @@ Attaching package: 'ggdag'</code></pre>
   
   config_modelsummary(factory_default = 'kableExtra')</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rdrobust)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: Rcpp</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>This is rstanarm version 2.32.1</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>- See https://mc-stan.org/rstanarm/articles/priors for changes to default priors!</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>- Default priors may change, so it's safest to specify priors, even if equivalent to the defaults.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>- For execution on a local, multicore CPU with excess RAM we recommend calling</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>  options(mc.cores = parallel::detectCores())</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.4
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ✔ ggplot2   3.5.0     ✔ tibble    3.2.1
-✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     </code></pre>
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ readr::col_factor() masks scales::col_factor()
 ✖ purrr::discard()    masks scales::discard()
-✖ dplyr::filter()     masks ggdag::filter(), stats::filter()
+✖ dplyr::filter()     masks stats::filter()
 ✖ dplyr::lag()        masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
 </div>
+</section>
+<section id="diff-in-diff-1" class="level2">
+<h2 class="anchored" data-anchor-id="diff-in-diff-1">Diff-in-Diff</h2>
 <p>For the first example on Diff-in-Diff I am going to use the code written by the brilliant <a href="https://rohanalexander.com/">Rohan Alexander</a> who has written the probably best introductio to Data Analysis in R which you can finde <a href="https://tellingstorieswithdata.com/">here</a>. Furthermore, the example he uses is a paper written by <a href="https://sites.google.com/site/charlesangelucci/">Charles Angelucci</a> and <a href="https://juliacage.com/fr/">Julia Cagé</a> who you probably know already.</p>
 <p>The paper is called “Newspapers in Times of Low Advertising Revenues” <span class="citation" data-cites="angelucci_newspapers_2019">[@angelucci_newspapers_2019]</span> and follows a difference-in-difference analysis and it also comes with replication material which means that we can try to emulate their results.</p>
 <p>In 1967, the French government introduced advertisements on French TV programs. This led to a decrease in advertising revenues for newspapers all over France. The idea is therefore to understand if and how the introduction of ads on TV affected the ad revenues for newspapers, both local and national ones, in France. They use a difference-in-difference approach to estimate the effect of the introduction of advertising on the advertising revenues of newspapers. Thus, the treatment is…? Exactly, the introduction of ads on TV. Angelucci and Cagé argue that national newspapers were more affected by this change than local newspapers. They have many more hypotheses which they test in this paper, but for now we will focus on this one. As mentioned above, their <a href="https://www.openicpsr.org/openicpsr/project/116438/version/V1/view">data is available</a> and we can use it to replicate their results. You need to sign up, to get it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>newspapers <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"data/Angelucci_Cage_AEJMicro_dataset.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>newspapers <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"data/Angelucci_Cage_AEJMicro_dataset.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next we will have to do some minor data management. Fortunately enough, this replication material is already pretty clean and we do not have to <code>mutate()</code> or <code>filter()</code> our way around too much. The only thing we actually have to do, is to convert some variables into factors and to create a new variable which is the ratio of advertising revenue over circulation. Here I specify the argument <code>across()</code> again of the <code>mutate()</code> function and within it, I give a vector <code>c()</code> containing all the variables that should be transformed to factors.</p>
 <p>Here is a brief explanation of the variables in the dataset:</p>
@@ -260,17 +186,18 @@ Attaching package: 'ggdag'</code></pre>
 <li><code>ra_cst_div_qtotal</code>: A derived variable representing the advertising revenue per unit of circulation (<code>ra_cst / qtotal</code>). This variable is calculated to assess the efficiency or effectiveness of advertising revenue in relation to the newspaper’s circulation size</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>newspapers <span class="ot">&lt;-</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  newspapers <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    year, id_news, after_national, local, national, ra_cst, ps_cst, qtotal</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ra_cst_div_qtotal =</span> ra_cst <span class="sc">/</span> qtotal, </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">c</span>(id_news, after_national, local, national), as.factor),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">as.integer</span>(year)) <span class="sc">|&gt;</span> </span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>()</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>newspapers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>newspapers <span class="ot">&lt;-</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  newspapers <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    year, id_news, after_national, local, national, ra_cst, ps_cst, qtotal</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ra_cst_div_qtotal =</span> ra_cst <span class="sc">/</span> qtotal, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">after_national =</span>  <span class="fu">if_else</span>(year <span class="sc">&gt;=</span> <span class="dv">1967</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">c</span>(id_news, local, national, after_national), as.factor),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">as.integer</span>(year)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>newspapers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,196 × 9
     year id_news after_national local national    ra_cst ps_cst  qtotal
@@ -282,13 +209,48 @@ Attaching package: 'ggdag'</code></pre>
  5  1964 1       0              1     0         74977888   2.35 102103.
  6  1965 1       0              1     0         74438248   2.29 105169.
  7  1966 1       0              1     0         81383000   2.31 126235.
- 8  1967 1       0              1     0         80263152   2.88 128667.
- 9  1968 1       0              1     0         87165704   3.45 131824.
-10  1969 1       0              1     0        102596384   3.28 132417.
+ 8  1967 1       1              1     0         80263152   2.88 128667.
+ 9  1968 1       1              1     0         87165704   3.45 131824.
+10  1969 1       1              1     0        102596384   3.28 132417.
 # ℹ 1,186 more rows
 # ℹ 1 more variable: ra_cst_div_qtotal &lt;dbl&gt;</code></pre>
 </div>
 </div>
+<section id="inspecting-your-data" class="level3">
+<h3 class="anchored" data-anchor-id="inspecting-your-data">Inspecting your data</h3>
+<p>One of the first things you can do, is to plot your data points and see if something stands out. This might serve as a first indicator of anything that concerns the parallel trends assumption for example. The code below plots the development of advertising revenue for French newspapers in a given year. The panels are divided into local newspaper or national newspaper. Remember that our control group are local newspapers and the treatment group are the national ones. Essentially, we would expect that before the intervention, both groups should have parallel trajectories in their outcomes. This is the parallel trends assumption. If the parallel trends assumption holds, the difference between the treatment and control group should be constant over time. If the parallel trends assumption is violated, the DiD estimator will be biased.</p>
+<div class="cell" data-warnings="false">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>newspapers <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">if_else</span>(local <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"Local"</span>, <span class="st">"National"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> ra_cst)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">dollar_format</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">prefix =</span> <span class="st">"$"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">suffix =</span> <span class="st">"M"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">scale =</span> <span class="fl">0.000001</span>)) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Advertising revenue"</span>) <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type), <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">1966.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 144 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session4_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the top panel/the local newspapers, the revenue data points are quite dense and cluster at regular intervals, suggesting that local newspapers had relatively stable advertising revenues year-to-year. There’s no obvious trend or shift in revenue around the dashed vertical line, which likely represents the year 1967, the year when television advertising was introduced in France.</p>
+<p>The distribution of data points in the lower panel showing the observations of national newspapers is less dense compared to local newspapers, which could suggest greater variability in the advertising revenues of national newspapers. There appears to be a change around the dashed vertical line at 1967. <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> After this year, there seems to be a wider spread of data points, including some years with significantly lower advertising revenues compared to previous years. This could indicate that national newspapers were more impacted by the introduction of television advertising. Overall, the graph suggests that the introduction of television advertising in 1967 may have had a differential impact on local and national newspapers, with national newspapers possibly experiencing greater negative effects on their advertising revenue.</p>
+<p>However, just because some face validity seems to indicate that there is a difference in the treatment and control group, does not mean that it actually is in the data. We need to test this with a model that we will construct in the next section.</p>
+</section>
+<section id="building-the-did-model" class="level3">
+<h3 class="anchored" data-anchor-id="building-the-did-model">Building the DiD model</h3>
 <p>This here is the regression formula for the DiD analysis, including the interaction term in which we specify the treatment. The treatment is the introduction of ads on TV and the interaction term is the product of the treatment and the national status of the newspaper</p>
 <p><span class="math display">\[
 \ln(\mathrm{ra\_cst}) = \beta_0 + \beta_1 \mathrm{national} + \beta_2 \mathrm{after\_national} + \beta_3(\mathrm{national} \times \mathrm{after\_national}) + \beta_4 \mathrm{year} + \alpha_i + \epsilon
@@ -303,73 +265,25 @@ Attaching package: 'ggdag'</code></pre>
 </ul>
 <p>This is the code to specify exactly this. Note that in R <code>national * after_national</code> includes three variables due to the <code>*</code> operator. It specifies the main effect of <code>national</code>, the main effect of <code>after_national</code> <strong>and</strong> the interaction effect <code>national:after_national</code>, representing the differential impact of the post-television advertising period specifically on national newspapers relative to local ones. If we had only put in <code>national:after_national</code>, we would have only included the interaction term and would have had to add the main effects manually. This means that the formula <code>log(ra_cst) ~ national*after_national + ...</code> is shorthand for <code>log(ra_cst) ~ national + after_national + national:after_national + ...</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>newspaper_did_model <span class="ot">&lt;-</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="fu">log</span>(ra_cst) <span class="sc">~</span> national <span class="sc">*</span> after_national <span class="sc">+</span> year <span class="sc">+</span> id_news,</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> newspapers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>newspaper_did_model <span class="ot">&lt;-</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="fu">log</span>(ra_cst) <span class="sc">~</span> national <span class="sc">*</span> after_national <span class="sc">+</span> year <span class="sc">+</span> id_news,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> newspapers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>selected_variables <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>, <span class="st">"after_national"</span> <span class="ot">=</span> <span class="st">"After change"</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(newspaper_did_model,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fmt =</span> <span class="dv">2</span>,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">coef_map =</span> selected_variables</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;(1)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Year</td>
-<td style="text-align: center;">0.05</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; box-shadow: 0px 1.5px;"></td>
-<td style="text-align: center; box-shadow: 0px 1.5px;">(0.00)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Num.Obs.</td>
-<td style="text-align: center;">1052</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">R2</td>
-<td style="text-align: center;">0.985</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">R2 Adj.</td>
-<td style="text-align: center;">0.984</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">AIC</td>
-<td style="text-align: center;">36167.6</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">BIC</td>
-<td style="text-align: center;">36574.2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Log.Lik.</td>
-<td style="text-align: center;">345.341</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">RMSE</td>
-<td style="text-align: center;">0.17</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(newspaper_did_model,</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">title =</span> <span class="st">"Difference-in-Differences Model Summary"</span>,</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>             <span class="co"># omit the fixed effects</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">coef_omit =</span> <span class="st">"id_news</span><span class="sc">\\</span><span class="st">d+"</span>,</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">estimate =</span> <span class="st">"{estimate} ({std.error})"</span>,</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">stars =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model_coefs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">national1</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"National Newspapers"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">after_national1</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Period After TV Ads"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">national1:after_national1</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Interaction Effect (National * After TV Ads)"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">year</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Year"</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(newspaper_did_model,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">title =</span> <span class="st">"Difference-in-Differences Model Summary"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>             <span class="co"># omit the fixed effects using a regular expression</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">coef_omit =</span> <span class="st">"id_news</span><span class="sc">\\</span><span class="st">d+"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">stars =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">coef_map =</span> model_coefs</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>             )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>Difference-in-Differences Model Summary</caption>
@@ -381,36 +295,36 @@ Attaching package: 'ggdag'</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">(Intercept)</td>
-<td style="text-align: center;">−72.099 (2.896)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: center;">(2.896)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">national1</td>
-<td style="text-align: center;">−1.039 (0.078)</td>
+<td style="text-align: left;">National Newspapers</td>
+<td style="text-align: center;">−1.039***</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
 <td style="text-align: center;">(0.078)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">after_national1</td>
-<td style="text-align: center;">−0.229 (0.031)</td>
+<td style="text-align: left;">Period After TV Ads</td>
+<td style="text-align: center;">−0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: center;">(0.031)</td>
+<td style="text-align: center;">(0.022)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">year</td>
-<td style="text-align: center;">0.046 (0.001)</td>
+<td style="text-align: left;">Interaction Effect (National * After TV Ads)</td>
+<td style="text-align: center;">−0.228***</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">(0.032)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Year</td>
+<td style="text-align: center;">0.046***</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; box-shadow: 0px 1.5px;"></td>
-<td style="text-align: center; box-shadow: 0px 1.5px;">(0.001)</td>
+<td style="text-align: center; box-shadow: 0px 1.5px;">(0.003)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Num.Obs.</td>
@@ -426,15 +340,15 @@ Attaching package: 'ggdag'</code></pre>
 </tr>
 <tr class="even">
 <td style="text-align: left;">AIC</td>
-<td style="text-align: center;">36167.6</td>
+<td style="text-align: center;">36169.6</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">BIC</td>
-<td style="text-align: center;">36574.2</td>
+<td style="text-align: center;">36581.2</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Log.Lik.</td>
-<td style="text-align: center;">345.341</td>
+<td style="text-align: center;">345.343</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">RMSE</td>
@@ -452,15 +366,29 @@ Attaching package: 'ggdag'</code></pre>
 
 </div>
 </div>
-<p>The intercept we can disregard in this case. As a reminder, it is when all IVs are set to 0. It does not really make sense in our case, especially due to the year variable.</p>
-<p><code>national1</code> is equal to -1.039. For national newspapers, the log of advertising revenue is, on average, 1.039 units lower than that of local newspapers, holding other factors constant. This effect is statistically significant given the small standard error (0.078), indicating a consistent difference between national and local newspapers in terms of advertising revenue. The coefficient for the period after the introduction of national television advertising (after_national1) is of -0.001 and thus suggests a negligible and statistically insignificant decrease in the log of advertising revenue across all newspapers, with a standard error of 0.022. This implies that the mere passage of time after the introduction of television advertising has no significant overall effect on newspaper advertising revenue.</p>
+<p>This table reports the results from a difference-in-differences (DiD) regression model, which examines the impact of television advertising on the advertising revenues of national newspapers compared to local newspapers over time. The intercept we can disregard in this case. As a reminder, it is when all IVs are set to 0. It does not really make sense in our case, especially due to the year variable. I did drop the coefficients of all the fixed effects for the individual newspapers (which were in the factor variable of <code>id_news</code>) because we are not very interested in them and it would have given us an individual coefficient for each newspaper which would have been a lot of displayed coefficients. I used a regular expression (regex) for that. For now, you do not have to know what this is, but it is a very powerful tool to manipulate character strings. At some point, I will add this to the text-as-data tutorial or to the already existing webscraping script.</p>
+<ul>
+<li><p><strong>National Newspapers</strong>: The coefficient for national newspapers is -1.039 and is highly statistically significant (p &lt; 0.001). This suggests that, holding other factors constant, the log of advertising revenue for national newspapers is, on average, 1.039 units lower than for local newspapers. This could imply that national newspapers, on their own, tend to have lower advertising revenue in this model or that they were already at a disadvantage before the treatment period.</p></li>
+<li><p><strong>Period After TV Ads</strong>: The coefficient for the period after the introduction of television advertisements is very small and not statistically significant (-0.001, p &gt; 0.1). This indicates that the introduction of television advertising, when not considering whether a newspaper is national or local, does not have a significant overall effect on advertising revenues.</p></li>
+<li><p><strong>Year</strong>: The coefficient for the year variable is positive and significant (0.046, p &lt; 0.001), indicating that there is a general positive trend in advertising revenue over time across all newspapers in the sample.</p></li>
+<li><p><strong>Interaction Effect (National * After TV Ads)</strong>: This is the center piece of our model since we try to estimate the causal effect through this interaction term. Fortunately for us, it is significant and negative (-0.228, p &lt; 0.001). In DiD analyses, this interaction term captures the differential impact of the treatment effect (here, the introduction of television ads) on the treated group (national newspapers). The negative sign suggests that after television advertising started, national newspapers experienced a significant decrease in advertising revenue compared to local newspapers. This term essentially captures the essence of the DiD strategy by showing the relative effect post-treatment for the group of interest!</p></li>
+</ul>
+<p>The model’s diagnostics indicate a very high R-squared value (0.985), which suggests that the model explains a large proportion of the variance in advertising revenue. The Root Mean Square Error (RMSE) is relatively low at 0.17, which suggests that the model’s predictions are close to the actual values.</p>
+<p>So what do we conclude now? Concerning our Difference-in-Difference causal design, the model supports the hypothesis that the introduction of television advertising had a different negative impact on national newspapers’ advertising revenues compared to local newspapers! The DiD model effectively isolates this effect by comparing the changes in revenues over time between the two groups (of course assuming parallel trends before the treatment).</p>
+</section>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
 </section>
 </section>
 
-</main>
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>I am not going to lie, I was hoping for a but of a clearer shift here… As you can see the causal effect is there mathematically but visually this could have been a bit more evident. This however emphasizes the importance of not only relying on visual inspection but rather your estimation strategy and being clear about the assumptions you are making.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

@@ -1,2 +1,7 @@
-# Regression Discontinuity Design
+# Regression Discontinuity Design & Instrumental Variables
 
+## Visualize causality in R
+
+The first step in any causal inference analysis is to visualize the causal graph. This is a graphical representation of the relationships between the variables in the analysis. 
+
+Showing causality graphically and the fact that it only runs in *one* direction have not always been the case in the history of statistics. As a matter of fact, it took us a long time to figure out what causality even really is and then another time to figure out how to display this in some way [@pearl_book_2018]. One of Judea Pearl's biggest contributions was that of graphical models for causality in form of *Directed Acyclic Graphs* which we will henceforth call DAG(s) [@pearl_causal_1995].  

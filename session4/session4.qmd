@@ -1,77 +1,30 @@
 # Diff-in-Diff
+<style>body {text-align: justify}</style>
 
 ## Introduction
 This week we will start talking about Causal Inference in R. You will have already seen the theoretical and mathematical parts with Brenda in the lecture. This script is supposed to initiate you to the practical part of Causal Inference. 
 
 This session will show you how to : 
 
-1. Visualize causality in R
-2. Prepare data for Causal Inference
-3. Perform a simple Diff-in-Diff analysis in R
-4. Interpret the results of a Diff-in-Diff analysis in R
-
+1. Prepare data for Causal Inference
+2. Perform a simple Diff-in-Diff analysis in R
+3. Interpret the results of a Diff-in-Diff analysis in R
 
 ```{r}
-library(ggdag)
-podcast_dag <- dagify(
-  podcast ~ mood + humor + prepared,
-  exam ~ mood + prepared,
-  coords = time_ordered_coords(
-    list(
-      # time point 1
-      c("prepared", "humor", "mood"),
-      # time point 2
-      "podcast",
-      # time point 3
-      "exam"
-    )
-  ),
-  exposure = "podcast",
-  outcome = "exam",
-  labels = c(
-    podcast = "podcast",
-    exam = "exam score",
-    mood = "mood",
-    humor = "humor",
-    prepared = "prepared"
-  )
-)
-ggdag(podcast_dag, use_labels = "label", text = FALSE) +
-  theme_dag()
+#| messages: false
+#| warnings: false
+library(haven)
+library(knitr)
+library(modelsummary)
+library(scales)
+library(tidyverse)
 ```
-
-
-## Visualize causality in R
-
-The first step in any causal inference analysis is to visualize the causal graph. This is a graphical representation of the relationships between the variables in the analysis. 
-
-Showing causality graphically and the fact that it only runs in *one* direction have not always been the case in the history of statistics. As a matter of fact, it took us a long time to figure out what causality even really is and then another time to figure out how to display this in some way [@pearl_book_2018]. One of Judea Pearl's biggest contributions was that of graphical models for causality in form of *Directed Acyclic Graphs* which we will henceforth call DAG(s) [@pearl_causal_1995].  
-
-
-
 
 
 
 
 
 ## Diff-in-Diff
-
-```{r}
-library(broom)
-library(broom.mixed)
-library(estimatr)
-library(haven)
-library(knitr)
-library(MatchIt)
-library(modelsummary)
-library(palmerpenguins)
-library(rdrobust)
-library(rstanarm)
-library(scales)
-library(tidyverse)
-```
-
-
 For the first example on Diff-in-Diff I am going to use the code written by the brilliant [Rohan Alexander](https://rohanalexander.com/) who has written the probably best introductio to Data Analysis in R which you can finde [here](https://tellingstorieswithdata.com/). Furthermore, the example he uses is a paper written by [Charles Angelucci](https://sites.google.com/site/charlesangelucci/) and [Julia Cagé](https://juliacage.com/fr/) who you probably know already. 
 
 The paper is called "Newspapers in Times of Low Advertising Revenues" [@angelucci_newspapers_2019] and follows a difference-in-difference analysis and it also comes with replication material which means that we can try to emulate their results.
@@ -104,7 +57,8 @@ newspapers <-
     year, id_news, after_national, local, national, ra_cst, ps_cst, qtotal
     ) |> 
   mutate(ra_cst_div_qtotal = ra_cst / qtotal, 
-         across(c(id_news, after_national, local, national), as.factor),
+         after_national =  if_else(year >= 1967, 1, 0),
+         across(c(id_news, local, national, after_national), as.factor),
          year = as.integer(year)) |> 
   rename()
 
@@ -112,6 +66,41 @@ newspapers
 ```
 
 
+
+
+### Inspecting your data
+
+One of the first things you can do, is to plot your data points and see if something stands out. This might serve as a first indicator of anything that concerns the parallel trends assumption for example. The code below plots the development of advertising revenue for French newspapers in a given year. The panels are divided into local newspaper or national newspaper. Remember that our control group are local newspapers and the treatment group are the national ones. Essentially, we would expect that before the intervention, both groups should have parallel trajectories in their outcomes. This is the parallel trends assumption. If the parallel trends assumption holds, the difference between the treatment and control group should be constant over time. If the parallel trends assumption is violated, the DiD estimator will be biased. 
+
+
+```{r}
+#| warnings: false
+newspapers |>
+  mutate(type = if_else(local == 1, "Local", "National")) |>
+  ggplot(aes(x = year, y = ra_cst)) +
+  geom_point(alpha = 0.5) +
+  scale_y_continuous(
+    labels = dollar_format(
+      prefix = "$",
+      suffix = "M",
+      scale = 0.000001)) +
+  labs(x = "Year", y = "Advertising revenue") +
+  facet_wrap(vars(type), nrow = 2) +
+  theme_minimal() +
+  geom_vline(xintercept = 1966.5, linetype = "dashed")
+```
+
+In the top panel/the local newspapers, the revenue data points are quite dense and cluster at regular intervals, suggesting that local newspapers had relatively stable advertising revenues year-to-year. There's no obvious trend or shift in revenue around the dashed vertical line, which likely represents the year 1967, the year when television advertising was introduced in France.
+
+The distribution of data points in the lower panel showing the observations of national newspapers is less dense compared to local newspapers, which could suggest greater variability in the advertising revenues of national newspapers. There appears to be a change around the dashed vertical line at 1967. [^1] After this year, there seems to be a wider spread of data points, including some years with significantly lower advertising revenues compared to previous years. This could indicate that national newspapers were more impacted by the introduction of television advertising. Overall, the graph suggests that the introduction of television advertising in 1967 may have had a differential impact on local and national newspapers, with national newspapers possibly experiencing greater negative effects on their advertising revenue.
+
+[^1]: I am not going to lie, I was hoping for a but of a clearer shift here... As you can see the causal effect is there mathematically but visually this could have been a bit more evident. This however emphasizes the importance of not only relying on visual inspection but rather your estimation strategy and being clear about the assumptions you are making.
+
+However, just because some face validity seems to indicate that there is a difference in the treatment and control group, does not mean that it actually is in the data. We need to test this with a model that we will construct in the next section.
+
+
+
+### Building the DiD model
 This here is the regression formula for the DiD analysis, including the interaction term in which we specify the treatment. The treatment is the introduction of ads on TV and the interaction term is the product of the treatment and the national status of the newspaper
 
 $$
@@ -142,25 +131,44 @@ newspaper_did_model <-
 
 
 ```{r}
-selected_variables <- c("year" = "Year", "after_national" = "After change")
+model_coefs <- c(
+  `national1` = "National Newspapers",
+  `after_national1` = "Period After TV Ads",
+  `national1:after_national1` = "Interaction Effect (National * After TV Ads)",
+  `year` = "Year"
+)
 
 modelsummary(newspaper_did_model,
-  fmt = 2,
-  coef_map = selected_variables
-)
-modelsummary(newspaper_did_model,
              title = "Difference-in-Differences Model Summary",
-             # omit the fixed effects
+             # omit the fixed effects using a regular expression
              coef_omit = "id_news\\d+",
-             estimate = "{estimate} ({std.error})",
-             stars = TRUE)
+             stars = TRUE,
+             coef_map = model_coefs
+             )
 
 ```
 
 
-The intercept we can disregard in this case. As a reminder, it is when all IVs are set to 0. It does not really make sense in our case, especially due to the year variable. 
+This table reports the results from a difference-in-differences (DiD) regression model, which examines the impact of television advertising on the advertising revenues of national newspapers compared to local newspapers over time. The intercept we can disregard in this case. As a reminder, it is when all IVs are set to 0. It does not really make sense in our case, especially due to the year variable. I did drop the coefficients of all the fixed effects for the individual newspapers (which were in the factor variable of `id_news`) because we are not very interested in them and it would have given us an individual coefficient for each newspaper which would have been a lot of displayed coefficients. I used a regular expression (regex) for that. For now, you do not have to know what this is, but it is a very powerful tool to manipulate character strings. At some point, I will add this to the text-as-data tutorial or to the already existing webscraping script.
 
-`national1` is equal to -1.039. For national newspapers, the log of advertising revenue is, on average, 1.039 units lower than that of local newspapers, holding other factors constant. This effect is statistically significant given the small standard error (0.078), indicating a consistent difference between national and local newspapers in terms of advertising revenue. The coefficient for the period after the introduction of national television advertising (after_national1) is of -0.001 and thus suggests a negligible and statistically insignificant decrease in the log of advertising revenue across all newspapers, with a standard error of 0.022. This implies that the mere passage of time after the introduction of television advertising has no significant overall effect on newspaper advertising revenue.
+
+
+- **National Newspapers**: The coefficient for national newspapers is -1.039 and is highly statistically significant (p < 0.001). This suggests that, holding other factors constant, the log of advertising revenue for national newspapers is, on average, 1.039 units lower than for local newspapers. This could imply that national newspapers, on their own, tend to have lower advertising revenue in this model or that they were already at a disadvantage before the treatment period.
+
+- **Period After TV Ads**: The coefficient for the period after the introduction of television advertisements is very small and not statistically significant (-0.001, p > 0.1). This indicates that the introduction of television advertising, when not considering whether a newspaper is national or local, does not have a significant overall effect on advertising revenues.
+
+- **Year**: The coefficient for the year variable is positive and significant (0.046, p < 0.001), indicating that there is a general positive trend in advertising revenue over time across all newspapers in the sample.
+
+- **Interaction Effect (National * After TV Ads)**: This is the center piece of our model since we try to estimate the causal effect through this interaction term. Fortunately for us, it is significant and negative (-0.228, p < 0.001). In DiD analyses, this interaction term captures the differential impact of the treatment effect (here, the introduction of television ads) on the treated group (national newspapers). The negative sign suggests that after television advertising started, national newspapers experienced a significant decrease in advertising revenue compared to local newspapers. This term essentially captures the essence of the DiD strategy by showing the relative effect post-treatment for the group of interest! 
+
+
+The model's diagnostics indicate a very high R-squared value (0.985), which suggests that the model explains a large proportion of the variance in advertising revenue. The Root Mean Square Error (RMSE) is relatively low at 0.17, which suggests that the model's predictions are close to the actual values.
+
+So what do we conclude now? Concerning our Difference-in-Difference causal design, the model supports the hypothesis that the introduction of television advertising had a different negative impact on national newspapers' advertising revenues compared to local newspapers! The DiD model effectively isolates this effect by comparing the changes in revenues over time between the two groups (of course assuming parallel trends before the treatment).
+
+
+
+
 
 ## References
 
