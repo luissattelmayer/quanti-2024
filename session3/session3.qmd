@@ -490,6 +490,8 @@ What would a similar model look like? Well, if we dropped one of our IVs for exa
 
 What is a better AIC? The **lower** AIC indicates that the model fits our data better than the model with the higher AIC. This is simply a mathematical measure. Stand-alone values of the AIC do not tell us much. They need to be considered in comparison to other values.
 
+
+
 ### BIC (Bayesian Information Criterion)
 
 Bayesian Statistics [^session3-1] are super fascinating and I will include them wherever I can. Luckily, the BIC is very common and is to the AIC what the adjusted $R^2$ is to the $R^2$. This means that it is a "stricter" measure of goodness of fit than the AIC. It is quite similar to the AIC but differs in that it penalizes you for adding "less useful" variables to your model (potentially *overfitting* or overcomplexifing your model). Thus, similarly to the AIC, we should also favor the **lower** BIC!
