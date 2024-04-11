@@ -69,6 +69,8 @@ This below is a *fuzzy* RDD design! It is fuzzy because the running variable inc
 
 Put in formal terms, a sharp RDD is happens when the treatment is deterministic and the rate jumps from 0% to 100% at the cutoff. We are working with a fuzzy RDD when the treatment at the cutoff is not from 0 to 1 (or 100%) but rather from 0 to some value between 0 and 1. 
 
+
+#### Fuzzy RDD example
 Below I simulate a *fuzzy* regression discontinuity design. I am simulating election results in 1000 constituencies. The vote share is randomly distributed around the 50% threshold. The government spending is increased if the vote share is above 50%. The spending is increased by a random noise to add variability. The idea behind this is that the government wants to reward constituencies where they have a majority but especially those where they have a very narrow majority. 
 
 ```{r}
@@ -122,26 +124,18 @@ summary(model)
 
 
 
+
 ```{r}
 #| messages: wrong
-
 library(rdrobust)
-library(modelsummary)
 
 rd_result <-
   rdrobust(y = election_data$spending,
            x = election_data$vote_share,
-           c = 50)
+           c = 50, 
+           h = 0.2)
 
-rd_table <- tibble(
-  Term = c("Coefficient", "Std. Error", "z value", "P-value"),
-  Estimate = c(rd_result$coef, rd_result$se, rd_result$z, rd_result$pv)
-)
-
-# Display using modelsummary
-modelsummary(rd_table, output = "markdown")
-
-rd_result
+rd_result |> summary()
 ```
 
 

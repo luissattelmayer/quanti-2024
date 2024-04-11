@@ -27,6 +27,9 @@ book:
     - part: "Diff-in-Diff"
       chapters: 
         - session4/session4.qmd
+    - part: "Regression Discontinuity Design"
+      chapters:
+        - session5/session5.qmd
     - part: "Time Series"
       chapters:
         - session6/session6.qmd
