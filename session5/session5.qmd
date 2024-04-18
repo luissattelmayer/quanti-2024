@@ -118,7 +118,7 @@ election_data <-
 
 
 ```{r}
-model <- lm(spending ~ vote_share + majority, data = election_data)
+model <- lm(spending ~ vote_share + vote_share^2, data = election_data)
 summary(model)
 ```
 
@@ -201,6 +201,7 @@ Below I am using the `rdrobust()` function from the `rdrobust` package to estima
 
 
 ```{r}
+library(rdrobust)
 rdd_dui <- rdrobust(
   # specifies the DV
   y = carpenter_dobkin_dui_only$number,
@@ -306,6 +307,7 @@ It reads as follows: `en_` indicates that we are working with a model trained on
 You always have to finalize your spacy session at the end! 
 
 ```{r}
+#| eval: false
 spacy_finalize()
 ```
 

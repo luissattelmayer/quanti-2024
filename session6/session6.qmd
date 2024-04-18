@@ -107,24 +107,34 @@ Enough theoretical talk about functions. Let's look at the left-right estimation
 ```{r}
 #| warning: false
 ggplot(cmp, aes(x = year, y = rile, color = party)) +
-  geom_point() +
+  geom_point(alpha = 0.3) +
   stat_smooth(aes(group = party), method = "loess", se = FALSE) +
-  scale_color_manual(values = c("#20aefa", "#000000", "#FFFF00", "#00e81b",
-                                "#f26dd5", "#fa2024")) +
+  scale_color_manual(values = c(
+    "#20aefa",
+    "#000000",
+    "#FFFF00",
+    "#00e81b",
+    "#f26dd5",
+    "#fa2024"
+  )) +
   # without this line, the lables of the x-axis would overlap
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  theme_minimal()
+  labs(
+    title = "Left-Right Position of German Parties",
+    x = "Year",
+    y = "Left-Right Position"
+  )
 
 ```
 This gives us the smoothed means for every party over the span of 1949 until 2021. We should start with a \textit{univariate series}. This means that we will look at the evolution of one series over time; in our case, this specifically means that we will look at the evolution of the left-right position of \textit{one party} over time. Let's start with the Christian-Democrats, the CDU, and the Social-Democrats, the SPD. I will quickly create an object, only containing values of the CDU and another one for only the SPD.
 
 ```{r}
-cdu <- cmp |> 
-  select(party, rile, year) |> 
+cdu <- cmp |>
+  select(party, rile, year) |>
   filter(party == "CDU/CSU")
 
-spd <- cmp |> 
-  select(party, rile, year) |> 
+spd <- cmp |>
+  select(party, rile, year) |>
   filter(party == "SPD")
 ```
 
@@ -138,8 +148,8 @@ cdu |>
   geom_point(alpha = 0.5,
              shape = 20,
              size = 2) +
-  labs(title = "RILE CDU/CSU over time", 
-       x = "Year", 
+  labs(title = "RILE CDU/CSU over time",
+       x = "Year",
        y = "Right to Left") +
   theme_minimal()
 ```
@@ -293,6 +303,82 @@ The results show us that the p-value < 0.05. That means that we should opt for a
 
 
 I encourage you to dig deeper into time series. They can truly be fun but they do necessitate some math and can cause headaches... I will see you in two weeks for some TaDa fun! 
+
+
+
+Below I simulate data to demonstrate how to fit a hierarchical model using the `lme4` package in R. In this example, we have data on individual income, region wealth index, and voting behavior across 10 regions. The hypothesis is that individual income positively influences voting behavior. This is simulated data and a hypothesis that probably would not hold up in a real research setting. However, it serves as a good example to demonstrate how to fit a hierarchical model.
+
+```{r}
+needs(lme4, lmtest)
+```
+
+
+You will need some sort of data in which the observations are at large (in our case the national) scale and then a smaller scale (in our case the regional) scale on which the observations/individuals are *nested*. Here, we have the individual income overall to predict overall voting behavior. However, we also have a regional wealth index which we assume to be a regional characteristic that influences voting behavior. We assume that the regional wealth index is different across regions and that it influences the individual income. This is a typical hierarchical model where we have individual-level data nested within a higher-level unit (region).
+
+
+```{r}
+# I am simulating data, so a seed will guarantee the same simulated data every time
+set.seed(1312) 
+
+data <- tibble(
+  region = rep(1:10, each = 100),
+  # 10 regions, 100 individuals each
+  individual_income = rnorm(1000, mean = 50000, sd = 10000),
+  # some control variables
+  education_level = rnorm(1000, mean = 16, sd = 2),
+  gender = sample(c("Male", "Female"), 1000, replace = TRUE),
+  # a random and fun control variable
+  number_of_pets = rpois(1000, lambda = 2)
+) |>
+  mutate(
+    individual_income = scale(individual_income),
+    education_level = scale(education_level),
+    # cheating myself to significant results for regional variable
+    regional_effect = rnorm(10, mean = 0, sd = 2)[region]  # greater SD for more variability
+  ) |>
+  mutate(voted = as.integer(
+    runif(1000) < plogis(
+      0.5 + 0.25 * individual_income + 0.15 * education_level +
+        0.2 * (gender == "Female") + 0.1 * number_of_pets +
+        regional_effect
+    )
+  )
+  )
+
+```
+
+
+Below I am fitting the hierarchical model using the `lmer()` function of the `lme4` package. The model is specified as follows:
+
+```{r}
+# Fit a logistic mixed model
+model <-
+  glmer(
+    voted ~ individual_income + education_level + gender + number_of_pets +
+      (1 | region),
+    family = binomial,
+    data = data
+  )
+```
+
+Note how we introduce the random effects/the multi-level by specifying `(1 | region)` in our regression equation. This means that we will also capture the different income effects per region. The `lmer()` function fits a linear mixed-effects model. The `lmer()` function is used to fit linear mixed-effects models, and the `glmer()` function is used to fit generalized linear mixed-effects models.
+
+
+Now we still have to determine whether or not our model is better than a null model. We can do this by comparing the full model with a null model. The null model is a model without hierarchical component of observation nested in the regions. We can do this by using the `anova()` function in R.
+
+```{r}
+model_null <- glm(voted ~ individual_income + education_level + gender + number_of_pets,
+                  family = binomial, data = data)
+
+# Compare the full model with the null model
+lmtest::lrtest(model_null, model)
+
+```
+
+
+
+## Where to go from here? 
+
 
 
 
