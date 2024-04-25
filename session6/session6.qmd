@@ -30,30 +30,24 @@ I suppose you have seen this with Jan, so I am only going to briefly recapitulat
 
 ### Data Structure
 As we will work with the CMP, I know that we have enough observations to have time series. However, we must make sure that the structure is according to time series across units. The data structure (and you might have seen this table in Jan's document) should look somewhat like this:
-\begin{longtable}{ll}
-\hline
-\hline
-\textbf{Unit} & \textbf{Time} \\ \hline
-\endfirsthead
-%
-\endhead
-\hline
-%
-1             & 1             \\
-1             & 2             \\
-1             & 3             \\
-1             & ...           \\
-1             & T             \\
-2             & 1             \\
-2             & 2             \\
-2             & 3             \\
-2             & ...           \\
-2             & T             \\
-...           & ...           \\
-N             & 1             \\
-N             & ...           \\
-N             & T             \\ \hline \hline
-\end{longtable}
+
+| **Unit** | **Time** |
+|----------|----------|
+| 1        | 1        |
+| 1        | 2        |
+| 1        | 3        |
+| 1        | ...      |
+| 1        | T        |
+| 2        | 1        |
+| 2        | 2        |
+| 2        | 3        |
+| 2        | ...      |
+| 2        | T        |
+| ...      | ...      |
+| N        | 1        |
+| N        | ...      |
+| N        | T        |
+
 
 Here we have a structure that allows us to do TSCS models. The data is structured in a way that it follows the order of unit per year. \par    
 
@@ -243,13 +237,13 @@ We must first load the `plm` model into our session. Everything else is, to be h
 library(plm)
 fixed_effects <-
   plm(
-    cultposition ~ lag_cultposition + sumright + limmig +
+    cultposition ~  lag_cultposition + sumright + limmig +
       govparty + pervote,
     data = tac,
     index = c("partyname", "date"),
     model = "within"
   )
-
+summary(fixed_effects)
 ```
 
 
@@ -274,7 +268,8 @@ stargazer::stargazer(
   random_effects,
   title = "Model Results",
   align = TRUE,
-  type = "html",
+  type = "text",
+  out = "class.txt",
   dep.var.labels = "Position on Multiculturalism",
   covariate.labels = c(
     "Lag of Multic",
@@ -372,12 +367,10 @@ model_null <- glm(voted ~ individual_income + education_level + gender + number_
 
 # Compare the full model with the null model
 lmtest::lrtest(model_null, model)
-
 ```
 
 
 
-## Where to go from here? 
 
 
 

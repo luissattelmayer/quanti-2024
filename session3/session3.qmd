@@ -600,6 +600,7 @@ glimpse(top50)
 For any further operation, we will first have to create a rank, or identifier for each song. In the next step, we use a simple for-loop to extract the artist and the image of the album cover. We will use the `ggimage` package to plot the album covers.
 ```{r}
 #| warning: false
+#| eval: false
 top50$rank <- seq.int(nrow(top50))
 
 
@@ -614,6 +615,8 @@ for (i in 1:50) {
 Unfortunately, Spotify has no documentation on how they measure or decide which song is more lively, acoustic or danceable than others. But we can probably get the gist of it by listening to the songs. Below we can plot the songs by their danceability and happiness. The happier the song, the more to the right it is. The more danceable the song, the higher it is. We can see that there seems to be a linear relationship between danceability and happiness, which does not necessarily come as a surprise.
 
 ```{r}
+#| eval: false
+
 ggplot(data = top50, aes(x = valence, y = danceability, text = (
   paste("Track:",
         track.name,
